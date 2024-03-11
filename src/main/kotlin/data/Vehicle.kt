@@ -25,4 +25,17 @@ data class Vehicle (
     fun getFuelConsumption(): Int {
         return fuelConsumption
     }
+
+    override fun toString(): String {
+        val stringRepresentation: StringBuilder  = StringBuilder()
+            .append("id: ${this.id}\n")
+            .append("name: ${this.name}\n")
+            .append("coordinates: x = ${this.coordinates.getX()}, y = ${this.coordinates.getY()}\n")
+            .append("creation date: ${this.creationDate}\n")
+            .append("engine power: ${this.enginePower}\n")
+            .append("fuel consumption: ${this.fuelConsumption}\n")
+            .append("vehicle type: ${this.type}\n")
+            .append("fuel type: ${this.fuelType}")
+        return stringRepresentation.toString()
+    }
 }

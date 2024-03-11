@@ -6,7 +6,7 @@ class Info(): Command("info", "вывести информацию о колле
 
     override fun execute(args: Array<String>?): Response {
         val message = StringBuilder()
-        message.append("Тип коллекции: ${collectionManager.getCollection()}}\n") // todo: collection type
+        message.append("Тип коллекции: ${collectionManager.getCollection()::class.simpleName}}\n")
         message.append("Количество элементов: ${collectionManager.getCollection().size}\n")
         message.append("Creation date:${collectionManager.getInitTime()}\n")
         return Response(message.toString())

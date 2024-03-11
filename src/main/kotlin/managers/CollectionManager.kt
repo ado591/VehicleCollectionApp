@@ -57,4 +57,12 @@ class CollectionManager(): KoinComponent {
             throw e
         }
     }
+
+    fun update(id: Int, element: Vehicle): Unit {
+        try {
+            collection[id] = element
+        } catch (e: IndexOutOfBoundsException) {
+            throw e
+        }
+    }
 }

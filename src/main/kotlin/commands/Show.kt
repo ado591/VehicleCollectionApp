@@ -15,5 +15,4 @@ class Show(): Command("show", "вывести в стандартный пото
         }
         return Response(message.toString())
     }
-
 }

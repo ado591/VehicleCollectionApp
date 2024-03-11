@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6ffcf5c3-4563-4169-ae2f-5446aa99ad91" name="Changes" comment="added Help and Add implementations">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/AddIfMin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/AddIfMin.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/Clear.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/Clear.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/Exit.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/Exit.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/Head.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/Head.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/Info.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/Info.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/RemoveById.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/RemoveById.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/RemoveFirst.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/RemoveFirst.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/Show.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/Show.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/SumOfFuel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/SumOfFuel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/UpdateId.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/UpdateId.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/data/Coordinates.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/data/Coordinates.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/data/Vehicle.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/data/Vehicle.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/managers/CollectionManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/managers/CollectionManager.kt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Kotlin Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2cuhYf9LAgU3WL1YFYvo6gqMdP5" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;command__branch&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Пользователь/IdeaProjects/VehicleConsoleApp&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.kotlinCompiler&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Пользователь\IdeaProjects\IreallyWantToWriteWithKoin\src\main\kotlin" />
+    </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="terminal" />
+    </option>
+  </component>
+  <component name="RunManager" selected="Kotlin.Main.kt">
+    <configuration name="ThingTest.sumTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;testPakage.ThingTest.sumTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="collectionManagerTest.verifyTimeInitialization" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;managers.collectionManagerTest.verifyTimeInitialization&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="Main.kt" type="JetRunConfigurationType" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="MainKt" />
+      <module name="VehicleConsoleApp.main" />
+      <shortenClasspath name="NONE" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Kotlin.Main.kt" />
+        <item itemvalue="Gradle.collectionManagerTest.verifyTimeInitialization" />
+        <item itemvalue="Gradle.ThingTest.sumTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6ffcf5c3-4563-4169-ae2f-5446aa99ad91" name="Changes" comment="" />
+      <created>1708967426367</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1708967426367</updated>
+    </task>
+    <task id="LOCAL-00001" summary="вовремя">
+      <option name="closed" value="true" />
+      <created>1710100711493</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1710100711493</updated>
+    </task>
+    <task id="LOCAL-00002" summary="added Help and Add implementations">
+      <option name="closed" value="true" />
+      <created>1710117618020</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1710117618020</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="вовремя" />
+    <MESSAGE value="added Help and Add implementations" />
+    <option name="LAST_COMMIT_MESSAGE" value="added Help and Add implementations" />
+  </component>
+</project>
