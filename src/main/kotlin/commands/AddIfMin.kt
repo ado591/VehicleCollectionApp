@@ -3,12 +3,11 @@ package commands
 import commands.extra.ItemBuilder
 import data.Vehicle
 import response.Response
-import java.util.ResourceBundle
 
 class AddIfMin(): Command("add_if_min",
     "добавить новый элемент в коллекцию, если его значение меньше, чем у наименьшего элемента этой коллекции") {
 
-    override fun execute(args: Array<String>?): Response {
+    override fun execute(argument: String): Response {
         val newElement: Vehicle = ItemBuilder().consoleAdd()
         return if (newElement < collectionManager.getMin()) {
             collectionManager.add(newElement);

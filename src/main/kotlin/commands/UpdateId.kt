@@ -2,13 +2,12 @@ package commands
 
 import commands.extra.ItemBuilder
 import response.Response
-import java.util.ResourceBundle
 
 class UpdateId(): Command("update_id", "обновить значение элемента коллекции, id которого равен заданному") {
 
-    override fun execute(args: Array<String>?): Response {
+    override fun execute(argument: String): Response {
         return try {
-            val id: Int = args[0].toInt() // todo: подумать про null
+            val id: Int = argument.toInt()
             val newElement = ItemBuilder().consoleAdd()
             collectionManager.update(id, newElement)
             Response("Элемент успешно обновлен")

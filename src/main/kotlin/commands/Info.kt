@@ -4,7 +4,7 @@ import response.Response
 
 class Info(): Command("info", "вывести информацию о коллекции") {
 
-    override fun execute(args: Array<String>?): Response {
+    override fun execute(argument: String): Response {
         val message = StringBuilder()
         message.append("Тип коллекции: ${collectionManager.getCollection()::class.simpleName}}\n")
         message.append("Количество элементов: ${collectionManager.getCollection().size}\n")

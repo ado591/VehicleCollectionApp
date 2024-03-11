@@ -1,12 +1,24 @@
-import commands.Add
 import di.consoleAppModule
+import managers.CollectionManager
+import managers.CommandManager
 import org.koin.core.context.GlobalContext.startKoin
+import utility.XmlReader
+import utility.XmlWriter
 
 fun main(args: Array<String>) {
     startKoin{
         modules(consoleAppModule)
     }
-    println("This is a sample Koin app")
-    Add().execute(null)
-    //todo: should I use System.getenv() or environmentProperties() from Koin? Ask Alexander
+    val filePath = System.getenv("${FILE_PATH}")
+    val collectionManager = CollectionManager(filePath)
+    val loader = XmlReader()
+    val write = XmlWriter()
+    val commandManager = CommandManager()
+
+
+    while (true) {
+        try {
+
+        }
+    }
 }

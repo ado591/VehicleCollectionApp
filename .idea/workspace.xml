@@ -4,34 +4,33 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6ffcf5c3-4563-4169-ae2f-5446aa99ad91" name="Changes" comment="added Help and Add implementations">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
+    <list default="true" id="6ffcf5c3-4563-4169-ae2f-5446aa99ad91" name="Changes" comment="added collection commands implementation and some extra methods in Collection Manager">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/Add.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/Add.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/AddIfMin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/AddIfMin.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/Clear.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/Clear.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/Command.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/Command.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/ExecuteScript.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/ExecuteScript.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/Exit.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/Exit.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/Head.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/Head.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/Help.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/Help.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/Info.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/Info.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/PrintAsc.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/PrintAsc.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/RemoveById.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/RemoveById.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/RemoveByType.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/RemoveByType.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/RemoveFirst.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/RemoveFirst.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/Save.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/Save.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/Show.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/Show.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/SumOfFuel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/SumOfFuel.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/commands/UpdateId.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/commands/UpdateId.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/console/Console.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/console/Console.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/data/Coordinates.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/data/Coordinates.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/data/Vehicle.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/data/Vehicle.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/managers/CollectionManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/managers/CollectionManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/managers/CommandManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/managers/CommandManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/utility/XmlReader.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/utility/XmlReader.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/utility/XmlWriter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/utility/XmlWriter.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,19 +86,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;command__branch&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Пользователь/IdeaProjects/VehicleConsoleApp&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.kotlinCompiler&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "command__branch",
+    "last_opened_file_path": "C:/Users/Пользователь/IdeaProjects/VehicleConsoleApp",
+    "project.structure.last.edited": "Global Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pathVariables"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Пользователь\IdeaProjects\IreallyWantToWriteWithKoin\src\main\kotlin" />
@@ -159,7 +158,10 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="Main.kt" type="JetRunConfigurationType" temporary="true">
+    <configuration name="Main.kt" type="JetRunConfigurationType">
+      <envs>
+        <env name="FILE_PATH" value="../files/loadfile.xml" />
+      </envs>
       <option name="MAIN_CLASS_NAME" value="MainKt" />
       <module name="VehicleConsoleApp.main" />
       <shortenClasspath name="NONE" />
@@ -167,9 +169,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="Gradle.collectionManagerTest.verifyTimeInitialization" />
+      <item itemvalue="Gradle.ThingTest.sumTest" />
+      <item itemvalue="Kotlin.Main.kt" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Kotlin.Main.kt" />
         <item itemvalue="Gradle.collectionManagerTest.verifyTimeInitialization" />
         <item itemvalue="Gradle.ThingTest.sumTest" />
       </list>
@@ -200,7 +206,15 @@
       <option name="project" value="LOCAL" />
       <updated>1710117618020</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="added collection commands implementation and some extra methods in Collection Manager">
+      <option name="closed" value="true" />
+      <created>1710141824051</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1710141824051</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -217,6 +231,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="вовремя" />
     <MESSAGE value="added Help and Add implementations" />
-    <option name="LAST_COMMIT_MESSAGE" value="added Help and Add implementations" />
+    <MESSAGE value="added collection commands implementation and some extra methods in Collection Manager" />
+    <option name="LAST_COMMIT_MESSAGE" value="added collection commands implementation and some extra methods in Collection Manager" />
   </component>
 </project>

@@ -2,13 +2,18 @@ package managers
 
 import data.Vehicle
 import org.koin.core.component.KoinComponent
+import utility.XmlReader
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayDeque
 
-class CollectionManager(): KoinComponent {
+class CollectionManager(private var filepath: String): KoinComponent {
     private var collection: ArrayDeque<Vehicle> = ArrayDeque() // todo: инициализация через файл
     private val initTime: Long = System.currentTimeMillis()
+
+    init {
+        collection = XmlReader().parseDocument(filepath)
+    }
 
     fun add(e: Vehicle): Unit {
         collection.add(e);
