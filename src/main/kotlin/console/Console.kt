@@ -24,4 +24,8 @@ class Console(private val collectionManager: CollectionManager, private val comm
         "update_id" to UpdateId()
     )
     // todo: pretty printCollection() ??
+
+    public fun print(message: String) { //todo: разобраться с выводом
+        println(message)
+    }
 }

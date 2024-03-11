@@ -7,15 +7,35 @@ import java.util.*
 import kotlin.collections.ArrayDeque
 
 class CollectionManager(): KoinComponent {
-    private lateinit var collection: ArrayDeque<Vehicle>
+    private var collection: ArrayDeque<Vehicle> = ArrayDeque() // todo: инициализация через файл
     private val initTime: Long = System.currentTimeMillis()
 
-    //todo: I've just removed everything from here to make Koin great again
-    fun add(e: Vehicle): Unit = TODO()
-    fun getMin(): Vehicle = TODO()
-    fun clear(): Unit = TODO()
-    fun isEmpty(): Boolean = TODO()
-    fun getById(id: Int): Vehicle = TODO()
+    fun add(e: Vehicle): Unit {
+        collection.add(e);
+    }
+    fun getMin(): Vehicle { //todo: тут может быть null, поправить
+        return collection.minBy { it }
+    }
+    fun clear(): Unit {
+        collection.clear();
+    }
+    fun isEmpty(): Boolean {
+        return collection.isEmpty();
+    }
+    fun head(): Vehicle {
+        try {
+            return collection.first()
+        } catch(e: IndexOutOfBoundsException) {
+            throw e;
+        }
+    }
+    fun getById(id: Int): Vehicle {
+        try {
+            return collection[id]
+        } catch(e: IndexOutOfBoundsException) {
+            throw e
+        }
+    }
 
     fun getInitTime(): String {
         val moscowTimeZone = TimeZone.getTimeZone("Europe/Moscow")
@@ -24,7 +44,17 @@ class CollectionManager(): KoinComponent {
         return dateFormat.format(Date(initTime))
     }
 
-    fun getCollection(): ArrayDeque<Vehicle> = TODO()
-    fun getSize(): Int = TODO()
-    fun removeById(id: Int): Unit = TODO()
+    fun getCollection(): ArrayDeque<Vehicle> {
+        return collection;
+    }
+    fun getSize(): Int {
+        return collection.size;
+    }
+    fun removeById(id: Int): Unit {
+        try {
+            collection.removeAt(id)
+        } catch (e: IndexOutOfBoundsException) {
+            throw e
+        }
+    }
 }

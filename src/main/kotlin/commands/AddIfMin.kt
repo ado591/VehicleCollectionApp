@@ -7,7 +7,7 @@ import java.util.ResourceBundle
 class AddIfMin(): Command("add_if_min",
     "добавить новый элемент в коллекцию, если его значение меньше, чем у наименьшего элемента этой коллекции") {
 
-    override fun execute(args: Array<String>): Response {
+    override fun execute(args: Array<String>?): Response {
         val newElement: Vehicle = TODO("Parsing input")
         return if (newElement < collectionManager.getMin()) {
             collectionManager.add(newElement);

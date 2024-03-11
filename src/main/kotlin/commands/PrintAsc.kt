@@ -5,7 +5,7 @@ import response.Response
 
 class PrintAsc(): Command("print_ascending","вывести элементы коллекции в порядке возрастания") {
 
-    override fun execute(args: Array<String>): Response {
+    override fun execute(args: Array<String>?): Response {
         val message = StringBuilder()
         val arrayCopy: ArrayDeque<Vehicle>  = collectionManager.getCollection()
         arrayCopy.sort() // todo: implement without extra array?

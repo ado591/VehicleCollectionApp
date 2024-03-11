@@ -7,8 +7,8 @@ import java.util.ResourceBundle
 
 class Save: Command("save", "сохранить коллекцию в файл") {
 
-    override fun execute(args: Array<String>): Response {
-        val filePath = args[0] //todo: implement without magic number
+    override fun execute(args: Array<String>?): Response {
+        val filePath = "meow" //todo: implement without magic number
         try {
             XmlWriter().write(collectionManager.getCollection(), filePath)
         } catch (e: IOException) { // todo: divide exceptions for IO and file not found?
