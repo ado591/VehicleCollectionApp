@@ -53,8 +53,8 @@ public class Vehicle {
     private FuelType fuelType; //Поле может быть null
 }
 public class Coordinates {
-    private double x; //Значение поля должно быть больше -89
-    private long y; //Максимаьлное значение поля: 483. Поле не может быть null
+    private int x; //Значение поля должно быть больше -89
+    private float y; //Максимальное значение поля: 483. Поле не может быть null
 }
 public enum VehicleType {
     SHIP,
