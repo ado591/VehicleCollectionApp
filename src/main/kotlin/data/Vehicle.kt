@@ -3,14 +3,14 @@ package data
 import java.time.ZonedDateTime
 
 data class Vehicle (
-    private var id: Long,
-    private var name: String,
-    private var coordinates: Coordinates,
-    private var creationDate: ZonedDateTime,
-    private var enginePower: Double,
-    private var fuelConsumption: Int,
-    private var type: VehicleType,
-    private var fuelType: FuelType
+    var id: Long,
+    var name: String,
+    var coordinates: Coordinates,
+    var creationDate: ZonedDateTime,
+    var enginePower: Double,
+    var fuelConsumption: Int,
+    var type: VehicleType,
+    var fuelType: FuelType
 ): Comparable<Vehicle> {
 
     override fun compareTo(other: Vehicle): Int {
@@ -22,15 +22,11 @@ data class Vehicle (
         )
     }
 
-    fun getFuelConsumption(): Int {
-        return fuelConsumption
-    }
-
     override fun toString(): String {
         val stringRepresentation: StringBuilder  = StringBuilder()
             .append("id: ${this.id}\n")
             .append("name: ${this.name}\n")
-            .append("coordinates: x = ${this.coordinates.getX()}, y = ${this.coordinates.getY()}\n")
+            .append("coordinates: x = ${this.coordinates.x}, y = ${this.coordinates.y}\n")
             .append("creation date: ${this.creationDate}\n")
             .append("engine power: ${this.enginePower}\n")
             .append("fuel consumption: ${this.fuelConsumption}\n")

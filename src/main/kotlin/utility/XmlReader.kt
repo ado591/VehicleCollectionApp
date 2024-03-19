@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference
 import console.Console
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import response.Response
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -16,14 +17,14 @@ class XmlReader(): KoinComponent {
      */
     fun parseDocument(filepath: String): ArrayDeque<Vehicle> {
         val console: Console by inject()
-        var collection = ArrayDeque<Vehicle>()
+        var collection: ArrayDeque<Vehicle>
         try {
             val xmlMapper = XmlMapper()
             val file = File(filepath)
             collection = xmlMapper.readValue(file, object : TypeReference<ArrayDeque<Vehicle>>() {})
             return collection
         } catch (e: Exception) {
-            console.print("Возникла ошибка при инициализации коллекции")
+            console.print(Response("Возникла ошибка при инициализации коллекции"))
             exitProcess(1)
         }
     }

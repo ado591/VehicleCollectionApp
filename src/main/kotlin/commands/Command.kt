@@ -15,6 +15,5 @@ sealed class Command(private val name: String, private val description: String):
 
     fun name(): String = this.name //todo: make easier for localization
     fun description(): String = this.description //todo: make easier for localization
-    //todo: тут пока всё non-null, но надо думать
-    abstract fun execute(argument: String): Response //todo: some mystery with response messages
+    abstract fun execute(argument: String?): Response //todo: some mystery with response messages
 }

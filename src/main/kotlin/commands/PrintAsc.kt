@@ -5,12 +5,17 @@ import response.Response
 
 class PrintAsc(): Command("print_ascending","вывести элементы коллекции в порядке возрастания") {
 
-    override fun execute(argument: String): Response {
+    /**
+     * Sorts the elements of the original collection in natural order and creates a string representation of each element
+     * Returns a Response object containing the composed message
+     * @param argument a string argument (should be null)
+     * @return a Response object with a message containing string representations of the sorted elements of the collection
+     */
+    override fun execute(argument: String?): Response {
         val message = StringBuilder()
-        val arrayCopy: ArrayDeque<Vehicle>  = collectionManager.getCollection()
-        arrayCopy.sort() // todo: implement without extra array?
-        for (element in arrayCopy) {
-            message.append(element.toString()).append("\n")
+        val sortedCollection = collectionManager.getCollection().sorted()
+        for (element in sortedCollection) {
+            message.appendLine(element.toString())
         }
         return Response(message.toString())
     }

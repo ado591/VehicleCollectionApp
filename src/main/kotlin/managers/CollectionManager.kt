@@ -15,13 +15,13 @@ class CollectionManager(private var filepath: String): KoinComponent {
         collection = XmlReader().parseDocument(filepath)
     }
 
-    fun add(e: Vehicle): Unit {
+    fun add(e: Vehicle) {
         collection.add(e);
     }
     fun getMin(): Vehicle { //todo: тут может быть null, поправить
         return collection.minBy { it }
     }
-    fun clear(): Unit {
+    fun clear() {
         collection.clear();
     }
     fun isEmpty(): Boolean {
@@ -34,7 +34,7 @@ class CollectionManager(private var filepath: String): KoinComponent {
             throw e;
         }
     }
-    fun getById(id: Int): Vehicle {
+    fun getById(id: Int): Vehicle { //todo: method is redundant
         try {
             return collection[id]
         } catch(e: IndexOutOfBoundsException) {
@@ -55,7 +55,7 @@ class CollectionManager(private var filepath: String): KoinComponent {
     fun getSize(): Int {
         return collection.size;
     }
-    fun removeById(id: Int): Unit {
+    fun removeById(id: Int) {
         try {
             collection.removeAt(id)
         } catch (e: IndexOutOfBoundsException) {
@@ -63,7 +63,7 @@ class CollectionManager(private var filepath: String): KoinComponent {
         }
     }
 
-    fun update(id: Int, element: Vehicle): Unit {
+    fun update(id: Int, element: Vehicle) {
         try {
             collection[id] = element
         } catch (e: IndexOutOfBoundsException) {

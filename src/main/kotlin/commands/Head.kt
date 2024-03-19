@@ -4,12 +4,14 @@ import response.Response
 
 class Head(): Command("head", "вывести первый элемент коллекции") {
 
-    override fun execute(argument: String): Response {
+    /**
+     * Retrieves the first element of the collection using collectionManager.head() method if first element exists
+     * @param argument a string argument (should be null)
+     * @return a Response object with the result of attempting to retrieve the first element of the collection
+     */
+    override fun execute(argument: String?): Response {
         return try {
-            val message: StringBuilder =
-                StringBuilder("Первый элемент коллекции")
-            message.append(" - ${collectionManager.head()}")
-            Response(message.toString())
+            Response("Первый элемент коллекции - ${collectionManager.head()}")
         } catch (e: IndexOutOfBoundsException) {
             Response("Коллекция пуста")
         }
