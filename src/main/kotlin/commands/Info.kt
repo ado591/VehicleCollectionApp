@@ -1,8 +1,10 @@
 package commands
 
 import response.Response
+import java.util.*
 
-class Info(): Command("info", "вывести информацию о коллекции") {
+class Info(): Command("info",
+    ResourceBundle.getBundle("message/info").getString("info_description")) {
 
 
     /**
@@ -11,9 +13,9 @@ class Info(): Command("info", "вывести информацию о колле
      */
     override fun execute(argument: String?): Response {
         val message = StringBuilder()
-        message.appendLine("Тип коллекции: ${collectionManager.getCollection()::class.simpleName}}")
+        message.appendLine("Тип коллекции: ${collectionManager.getCollection()::class.simpleName}")
         message.appendLine("Количество элементов: ${collectionManager.getCollection().size}")
-        message.appendLine("Creation date:${collectionManager.getInitTime()}")
+        message.appendLine("Creation date: ${collectionManager.getInitTime()}")
         return Response(message.toString())
     }
 }

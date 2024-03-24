@@ -3,57 +3,43 @@ package managers
 import data.Vehicle
 import org.koin.core.component.KoinComponent
 import utility.XmlReader
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayDeque
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
-class CollectionManager(private var filepath: String): KoinComponent {
-    private var collection: ArrayDeque<Vehicle> = ArrayDeque() // todo: инициализация через файл
-    private val initTime: Long = System.currentTimeMillis()
-
-    init {
-        collection = XmlReader().parseDocument(filepath)
-    }
+class CollectionManager(filepath: String): KoinComponent {
+    private var collection: ArrayDeque<Vehicle> = XmlReader().parseDocument(filepath)
+    private val initTime: ZonedDateTime = ZonedDateTime.now()
 
     fun add(e: Vehicle) {
-        collection.add(e);
+        collection.add(e)
     }
-    fun getMin(): Vehicle { //todo: тут может быть null, поправить
-        return collection.minBy { it }
+    fun getMin(): Vehicle {
+       return collection.minBy { it }
     }
     fun clear() {
-        collection.clear();
+        collection.clear()
     }
     fun isEmpty(): Boolean {
-        return collection.isEmpty();
+        return collection.isEmpty()
     }
     fun head(): Vehicle {
         try {
             return collection.first()
-        } catch(e: IndexOutOfBoundsException) {
-            throw e;
-        }
-    }
-    fun getById(id: Int): Vehicle { //todo: method is redundant
-        try {
-            return collection[id]
         } catch(e: IndexOutOfBoundsException) {
             throw e
         }
     }
 
     fun getInitTime(): String {
-        val moscowTimeZone = TimeZone.getTimeZone("Europe/Moscow")
-        val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm:ss")
-        dateFormat.timeZone = moscowTimeZone
-        return dateFormat.format(Date(initTime))
+        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss z")
+        return initTime.format(formatter)
     }
 
     fun getCollection(): ArrayDeque<Vehicle> {
-        return collection;
+        return collection
     }
     fun getSize(): Int {
-        return collection.size;
+        return collection.size
     }
     fun removeById(id: Int) {
         try {
@@ -69,5 +55,25 @@ class CollectionManager(private var filepath: String): KoinComponent {
         } catch (e: IndexOutOfBoundsException) {
             throw e
         }
+    }
+
+    /**
+     * generates new IDs for the whole collection
+     */
+    fun rearrange() {
+        var newId: Long = 1
+        collection
+            .forEach{it.id = newId++}
+    }
+
+    /**
+     * generates new IDs for all elements after removed
+     * @param start -- start id for generating
+     */
+
+    fun rearrange(start: Int) {
+        collection
+            .filter { vehicle -> vehicle.id >= start }
+            .forEach{ it.id -= 1 }
     }
 }

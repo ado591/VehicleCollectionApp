@@ -1,8 +1,10 @@
 package commands
 
 import response.Response
+import java.util.*
 
-class Head(): Command("head", "вывести первый элемент коллекции") {
+class Head(): Command("head",
+    ResourceBundle.getBundle("message/info").getString("head_description")) {
 
     /**
      * Retrieves the first element of the collection using collectionManager.head() method if first element exists
@@ -11,7 +13,7 @@ class Head(): Command("head", "вывести первый элемент кол
      */
     override fun execute(argument: String?): Response {
         return try {
-            Response("Первый элемент коллекции - ${collectionManager.head()}")
+            Response("Первый элемент коллекции: ${collectionManager.head()}")
         } catch (e: IndexOutOfBoundsException) {
             Response("Коллекция пуста")
         }

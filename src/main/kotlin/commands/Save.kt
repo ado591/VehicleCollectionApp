@@ -3,8 +3,11 @@ package commands
 import response.Response
 import utility.XmlWriter
 import java.io.FileNotFoundException
+import java.io.IOException
+import java.util.*
 
-class Save: Command("save", "сохранить коллекцию в файл") {
+class Save: Command("save",
+    ResourceBundle.getBundle("message/info").getString("save_description")) {
 
 
     /**
@@ -16,12 +19,13 @@ class Save: Command("save", "сохранить коллекцию в файл")
         try {
             val filePath = argument!!
             XmlWriter().write(collectionManager.getCollection(), filePath)
-        } catch (e: Exception) { // todo: divide exceptions for IO and file not found?
+        } catch (e: FileNotFoundException) {
+            return Response("Файл не найден")
+        } catch (e: IOException) {
             return Response("Возникла ошибка при записи в файл")
         } catch(e: NullPointerException) {
             return Response("Не передан путь к файлу")
         }
-        //todo: catch jackson exceptions
         return Response("Файл успешно сохранен")
     }
 }

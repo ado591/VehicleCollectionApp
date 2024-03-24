@@ -1,5 +1,6 @@
 package commands
 
+import commands.extra.ItemBuilder
 import console.Console
 import managers.CollectionManager
 import managers.CommandManager
@@ -12,8 +13,8 @@ sealed class Command(private val name: String, private val description: String):
     val collectionManager: CollectionManager by inject()
     val commandManager: CommandManager by inject()
     val console: Console by inject()
-
-    fun name(): String = this.name //todo: make easier for localization
-    fun description(): String = this.description //todo: make easier for localization
-    abstract fun execute(argument: String?): Response //todo: some mystery with response messages
+    val builder: ItemBuilder by inject()
+    fun name(): String = this.name
+    fun description(): String = this.description
+    abstract fun execute(argument: String?): Response
 }

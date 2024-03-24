@@ -1,24 +1,29 @@
 package utility
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import console.Console
 import data.Vehicle
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import response.Response
 import java.io.File
+import java.io.IOException
+import java.lang.IllegalArgumentException
 
 class XmlWriter: KoinComponent {
-    //todo: replace with Jackson
-    //todo: doesn't work with current gradle build
-
+    private val console: Console by inject()
     /**
      * writes collection in xml format
      */
-    fun write(collection: Collection<Vehicle>, path: String): Unit  {
+    fun write(collection: Collection<Vehicle>, path: String) {
         try {
             val xmlMapper = XmlMapper()
             val file = File(path)
             xmlMapper.writeValue(file, collection)
-        } catch (e: Exception) {
-            throw e
+        } catch (e: IOException) {
+            console.print(Response("Возникла ошибка при записи коллекции"))
+        } catch (e: IllegalArgumentException) {
+            console.print(Response("Неверно указан путь к файлу"))
         }
     }
 

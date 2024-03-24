@@ -1,8 +1,10 @@
 package commands
 
 import response.Response
+import java.util.ResourceBundle
 
-class Help(): Command("help", "вывести справку по доступным командам"){
+class Help(): Command("help",
+    ResourceBundle.getBundle("message/info").getString("help_description")){
 
     /**
      * @param argument a string argument (should be null)

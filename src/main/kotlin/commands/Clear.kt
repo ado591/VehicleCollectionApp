@@ -1,8 +1,10 @@
 package commands
 
 import response.Response
+import java.util.*
 
-class Clear(): Command("clear", "очистить коллекцию") {
+class Clear(): Command("clear",
+    ResourceBundle.getBundle("message/info").getString("clear_description")) {
 
     /**
      * Clears the collection
@@ -10,12 +12,7 @@ class Clear(): Command("clear", "очистить коллекцию") {
      * @return a Response object containing a messages with result of command
      */
     override fun execute(argument: String?): Response {
-        //todo: any troubles with collection??
-        return try {
-            collectionManager.clear()
-            Response("Коллекция успешно очищена")
-        } catch (e: Exception) {
-            Response("Неизвестная ошибка при выполнении команды ${this.name()}")
-        }
+        collectionManager.clear()
+        return Response("Коллекция успешно очищена")
     }
 }

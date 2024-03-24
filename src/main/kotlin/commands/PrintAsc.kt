@@ -1,9 +1,10 @@
 package commands
 
-import data.Vehicle
 import response.Response
+import java.util.*
 
-class PrintAsc(): Command("print_ascending","вывести элементы коллекции в порядке возрастания") {
+class PrintAsc(): Command("print_ascending",
+    ResourceBundle.getBundle("message/info").getString("printAsc_description")) {
 
     /**
      * Sorts the elements of the original collection in natural order and creates a string representation of each element

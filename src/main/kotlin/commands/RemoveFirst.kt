@@ -1,8 +1,10 @@
 package commands
 
 import response.Response
+import java.util.*
 
-class RemoveFirst(): Command("remove_first", "удалить первый элемент из коллекции") {
+class RemoveFirst(): Command("remove_first",
+    ResourceBundle.getBundle("message/info").getString("removeFirst_description")) {
 
     /**
      *  Removes first element in the collection
@@ -12,6 +14,7 @@ class RemoveFirst(): Command("remove_first", "удалить первый эле
     override fun execute(argument: String?): Response {
         return try {
             collectionManager.removeById(0)
+            collectionManager.rearrange()
             Response("Элемент успешно удален")
         } catch (e: IndexOutOfBoundsException) {
             Response("Коллекция пуста")

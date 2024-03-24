@@ -1,5 +1,6 @@
 package di
 
+import commands.extra.ItemBuilder
 import managers.CollectionManager
 import managers.CommandManager
 import console.Console
@@ -8,7 +9,11 @@ import org.koin.dsl.module
 
 val consoleAppModule = module {
     singleOf(::CommandManager)
-    singleOf(::CollectionManager)
     singleOf(::Console)
+    single(createdAtStart = true){
+        val filePath = System.getenv("FILE_PATH")
+        CollectionManager(filePath)
+    }
+    singleOf(::ItemBuilder)
 }
 

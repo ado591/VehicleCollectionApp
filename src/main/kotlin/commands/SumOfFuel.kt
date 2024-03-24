@@ -1,8 +1,10 @@
 package commands
 
 import response.Response
+import java.util.*
 
-class SumOfFuel(): Command("sum_of_fuel_consumption", "вывести сумму значений поля fuelConsumption для всех элементов коллекции") {
+class SumOfFuel(): Command("sum_of_fuel_consumption",
+    ResourceBundle.getBundle("message/info").getString("sumOfFuel_description")) {
 
     /**
      * Prints sum of fuel for all vehicles listed in collection

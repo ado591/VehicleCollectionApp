@@ -1,8 +1,10 @@
 package commands
 
 import response.Response
+import java.util.*
 
-class RemoveById(): Command("remove_by_id", "удалить элемент из коллекции по его id") {
+class RemoveById(): Command("remove_by_id",
+    ResourceBundle.getBundle("message/info").getString("removeById_description")) {
 
     /**
      * Removes item by given id iff argument represents index in current collection
@@ -12,8 +14,9 @@ class RemoveById(): Command("remove_by_id", "удалить элемент из 
     override fun execute(argument: String?): Response {
         val id: Int
         return try {
-            id = argument!!.toInt()
+            id = argument!!.toInt() - 1
             collectionManager.removeById(id)
+            collectionManager.rearrange(id)
             Response("Элемент успешно удален")
         } catch (e: NumberFormatException) {
             Response("Аргумент команды должен быть числом")

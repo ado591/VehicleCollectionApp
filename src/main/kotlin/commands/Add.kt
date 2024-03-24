@@ -1,10 +1,12 @@
 package commands
 
-import commands.extra.ItemBuilder
+import commands.extra.Autogeneratable
 import data.Vehicle
 import response.Response
+import java.util.*
 
-class Add(): Command("add", "добавить новый элемент в коллекцию"){
+class Add(): Command("add",
+    ResourceBundle.getBundle("message/info").getString("add_description")), Autogeneratable {
 
     /**
      * Adds element to collection using ItemBuilder class and .consoleAdd() method
@@ -12,10 +14,14 @@ class Add(): Command("add", "добавить новый элемент в ко�
      * @return a Response object with a success message after adding an element
      */
     override fun execute(argument: String?): Response {
-        val builder = ItemBuilder()
-        val newElement: Vehicle = builder.consoleAdd()
+        val newElement: Vehicle = when (argument) {
+            "--auto" -> builder.autoAdd()
+            null -> builder.consoleAdd()
+            else -> {
+                return Response("Неизвестный флаг команды ${this.name()}")
+            }
+        }
         collectionManager.add(newElement)
-        return Response("элемент успешно добавлен")
+        return Response("Элемент успешно добавлен")
     }
-    //todo: add auto generated element for execute_script command
 }

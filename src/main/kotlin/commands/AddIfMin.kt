@@ -1,11 +1,12 @@
 package commands
 
-import commands.extra.ItemBuilder
+import commands.extra.Autogeneratable
 import data.Vehicle
 import response.Response
+import java.util.*
 
 class AddIfMin(): Command("add_if_min",
-    "добавить новый элемент в коллекцию, если его значение меньше, чем у наименьшего элемента этой коллекции") {
+    ResourceBundle.getBundle("message/info").getString("addIfMin_description")), Autogeneratable {
 
     /**
      * Adds element to collection using ItemBuilder class and .consoleAdd() method
@@ -14,13 +15,21 @@ class AddIfMin(): Command("add_if_min",
      * @return a Response object with a success message after adding an element or error message if element is not a min
      */
     override fun execute(argument: String?): Response {
-        val newElement: Vehicle = ItemBuilder().consoleAdd()
+        val newElement: Vehicle = when (argument) {
+            "--auto" -> builder.autoAdd()
+            null -> builder.consoleAdd()
+            else -> {
+                return Response("Неизвестный флаг команды ${this.name()}")
+            }
+        }
+        if (collectionManager.isEmpty()) {
+            return Response("Коллекция пуста")
+        }
         return if (newElement < collectionManager.getMin()) {
-            collectionManager.add(newElement);
+            collectionManager.add(newElement)
             Response("Элемент успешно добавлен в коллекцию")
         } else {
             Response("Этот элемент не является минимумом для коллекции")
         }
-        //todo: add auto generated element ???????
     }
 }

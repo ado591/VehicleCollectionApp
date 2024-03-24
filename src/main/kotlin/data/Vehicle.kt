@@ -1,17 +1,31 @@
 package data
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonTypeName
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
+@JsonTypeName("vehicle")
 data class Vehicle (
-    var id: Long,
-    var name: String,
-    var coordinates: Coordinates,
-    var creationDate: ZonedDateTime,
-    var enginePower: Double,
-    var fuelConsumption: Int,
-    var type: VehicleType,
-    var fuelType: FuelType
+    @JsonIgnore
+    var id: Long = genId(),
+    val name: String,
+    val coordinates: Coordinates,
+    @JsonIgnore
+    val creationDate: ZonedDateTime = ZonedDateTime.now(),
+    val enginePower: Double,
+    val fuelConsumption: Int,
+    val type: VehicleType,
+    val fuelType: FuelType
 ): Comparable<Vehicle> {
+
+    companion object {
+        private var currentId: Long = 0
+        fun genId(): Long {
+            currentId++
+            return currentId
+        }
+    }
 
     override fun compareTo(other: Vehicle): Int {
         return compareValuesBy(this, other,
@@ -23,15 +37,20 @@ data class Vehicle (
     }
 
     override fun toString(): String {
+        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss z")
         val stringRepresentation: StringBuilder  = StringBuilder()
-            .append("id: ${this.id}\n")
-            .append("name: ${this.name}\n")
-            .append("coordinates: x = ${this.coordinates.x}, y = ${this.coordinates.y}\n")
-            .append("creation date: ${this.creationDate}\n")
-            .append("engine power: ${this.enginePower}\n")
-            .append("fuel consumption: ${this.fuelConsumption}\n")
-            .append("vehicle type: ${this.type}\n")
-            .append("fuel type: ${this.fuelType}")
+            .appendLine("id: ${this.id}")
+            .appendLine("name: ${this.name}")
+            .appendLine("coordinates: x = ${this.coordinates.x}, " +
+                    "y = ${this.coordinates.y}")
+            .appendLine("creation date: ${this.creationDate.format(formatter)}")
+            .appendLine("engine power: ${this.enginePower}")
+            .appendLine("fuel consumption: ${this.fuelConsumption}")
+            .appendLine("vehicle type: ${this.type}")
+            .appendLine("fuel type: ${this.fuelType}")
         return stringRepresentation.toString()
     }
+    constructor() : this(genId(), "unknown", Coordinates(), ZonedDateTime.now(), 0.01, 1, VehicleType.CHOPPER, FuelType.ANTIMATTER)
 }
+
+
