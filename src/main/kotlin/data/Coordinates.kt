@@ -1,6 +1,9 @@
 package data
 
-data class Coordinates(
-    private var x: Int,
-    private var y: Float
-) {}
+data class Coordinates (
+    var x: Int,
+    var y: Float
+)
+{
+    constructor(): this(0,0f)
+}

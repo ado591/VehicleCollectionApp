@@ -1,16 +1,23 @@
 package commands
 
 import response.Response
-import java.util.ResourceBundle
+import java.util.*
 
-class RemoveFirst(): Command("remove_first", "удалить первый элемент из коллекции") {
+class RemoveFirst(): Command("remove_first",
+    ResourceBundle.getBundle("message/info").getString("removeFirst_description")) {
 
-    override fun execute(args: Array<String>): Response {
-        return if (collectionManager.isEmpty()) {
-            Response(ResourceBundle.getBundle("error_message").getString("empty_collection"))
-        } else {
-            collectionManager.removeById(1) //todo: fix magic number
-            Response(ResourceBundle.getBundle("success_message").getString("remove"))
+    /**
+     *  Removes first element in the collection
+     *  @param argument (should be null)
+     *  @return a Response object with a success message or an error message based on the operation result
+     */
+    override fun execute(argument: String?): Response {
+        return try {
+            collectionManager.removeById(0)
+            collectionManager.rearrange()
+            Response("Элемент успешно удален")
+        } catch (e: IndexOutOfBoundsException) {
+            Response("Коллекция пуста")
         }
     }
 }

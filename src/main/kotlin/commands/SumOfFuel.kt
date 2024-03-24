@@ -1,18 +1,23 @@
 package commands
 
 import response.Response
-import java.util.ResourceBundle
+import java.util.*
 
-class SumOfFuel(): Command("sum_of_fuel_consumption", "вывести сумму значений поля fuelConsumption для всех элементов коллекции") {
+class SumOfFuel(): Command("sum_of_fuel_consumption",
+    ResourceBundle.getBundle("message/info").getString("sumOfFuel_description")) {
 
-    override fun execute(args: Array<String>): Response {
+    /**
+     * Prints sum of fuel for all vehicles listed in collection
+     * @param argument (should be null)
+     * @return a Response object with a sum of fuel or an error message based on the operation result
+     */
+    override fun execute(argument: String?): Response {
         return if (collectionManager.isEmpty()) {
-            Response(ResourceBundle.getBundle("error_message").getString("empty_collection"))
+            Response("Если у вас нет машины, то и топлива у нее нет")
         } else {
-            val sumOfFuel = collectionManager.getCollection().sumOf { it.getFuelConsumption() }
-            val message = StringBuilder(ResourceBundle.getBundle("info_message").getString("fuel_sum"))
-            message.append(" - $sumOfFuel")
-            Response(message.toString())
+            val sumOfFuel = collectionManager.getCollection().sumOf { it.fuelConsumption }
+            val message = "fuel sum: $sumOfFuel"
+            Response(message)
         }
     }
 }

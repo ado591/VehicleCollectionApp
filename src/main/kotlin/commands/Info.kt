@@ -1,14 +1,21 @@
 package commands
 
 import response.Response
+import java.util.*
 
-class Info(): Command("info", "вывести информацию о коллекции") {
+class Info(): Command("info",
+    ResourceBundle.getBundle("message/info").getString("info_description")) {
 
-    override fun execute(args: Array<String>): Response {
+
+    /**
+     * @param argument a string argument (should be null)
+     * @return a Response object with type, size and init time of current collection
+     */
+    override fun execute(argument: String?): Response {
         val message = StringBuilder()
-        message.append("Тип коллекции: ${collectionManager.getCollection()}}\n") // todo: collection type
-        message.append("Количество элементов: ${collectionManager.getCollection().size}\n")
-        message.append("Creation date:${collectionManager.getInitTime()}\n")
+        message.appendLine("Тип коллекции: ${collectionManager.getCollection()::class.simpleName}")
+        message.appendLine("Количество элементов: ${collectionManager.getCollection().size}")
+        message.appendLine("Creation date: ${collectionManager.getInitTime()}")
         return Response(message.toString())
     }
 }

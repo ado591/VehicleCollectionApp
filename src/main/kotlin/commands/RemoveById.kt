@@ -1,17 +1,29 @@
 package commands
 
 import response.Response
-import java.util.ResourceBundle
+import java.util.*
 
-class RemoveById(): Command("remove_by_id", "удалить элемент из коллекции по его id") {
+class RemoveById(): Command("remove_by_id",
+    ResourceBundle.getBundle("message/info").getString("removeById_description")) {
 
-    override fun execute(args: Array<String>): Response {
-        val id: Int = TODO("Parsing input")
-        return if (id >= collectionManager.getSize()) {
-            Response(ResourceBundle.getBundle("error_message").getString("id_not_found"))
-        } else {
+    /**
+     * Removes item by given id iff argument represents index in current collection
+     * @param argument a string argument representing the ID of the element to be removed
+     * @return a Response object with a success message or an error message based on the operation result
+     */
+    override fun execute(argument: String?): Response {
+        val id: Int
+        return try {
+            id = argument!!.toInt() - 1
             collectionManager.removeById(id)
-            Response(ResourceBundle.getBundle("success_message").getString("remove"))
+            collectionManager.rearrange(id)
+            Response("Элемент успешно удален")
+        } catch (e: NumberFormatException) {
+            Response("Аргумент команды должен быть числом")
+        } catch (e: IndexOutOfBoundsException) {
+            Response("Указан некорректный индекс")
+        } catch(e: NullPointerException) {
+            Response("Не передан индекс")
         }
     }
 

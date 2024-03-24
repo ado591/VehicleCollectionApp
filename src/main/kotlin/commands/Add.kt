@@ -1,15 +1,27 @@
 package commands
 
+import commands.extra.Autogeneratable
 import data.Vehicle
 import response.Response
-import java.util.ResourceBundle
+import java.util.*
 
-class Add(): Command("add", "добавить новый элемент в коллекцию"){
+class Add(): Command("add",
+    ResourceBundle.getBundle("message/info").getString("add_description")), Autogeneratable {
 
-    override fun execute(args: Array<String>): Response {
-        val newElement: Vehicle = TODO()
+    /**
+     * Adds element to collection using ItemBuilder class and .consoleAdd() method
+     * @param argument (should be null)
+     * @return a Response object with a success message after adding an element
+     */
+    override fun execute(argument: String?): Response {
+        val newElement: Vehicle = when (argument) {
+            "--auto" -> builder.autoAdd()
+            null -> builder.consoleAdd()
+            else -> {
+                return Response("Неизвестный флаг команды ${this.name()}")
+            }
+        }
         collectionManager.add(newElement)
-        return Response(ResourceBundle.getBundle("success_message").getString("add"))
+        return Response("Элемент успешно добавлен")
     }
-    //todo: add auto generated element for execute_script command
 }

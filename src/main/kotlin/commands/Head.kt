@@ -1,18 +1,21 @@
 package commands
 
 import response.Response
-import java.util.ResourceBundle
+import java.util.*
 
-class Head(): Command("head", "вывести первый элемент коллекции") {
+class Head(): Command("head",
+    ResourceBundle.getBundle("message/info").getString("head_description")) {
 
-    override fun execute(args: Array<String>): Response {
-        return if (collectionManager.isEmpty()) {
-            Response(ResourceBundle.getBundle("error_message").getString("empty_collection"))
-        } else {
-            val message: StringBuilder =
-                StringBuilder(ResourceBundle.getBundle("success_message").getString("head"))
-            message.append(" - ${collectionManager.getById(0)}") //todo: magic number
-            Response(message.toString())
+    /**
+     * Retrieves the first element of the collection using collectionManager.head() method if first element exists
+     * @param argument a string argument (should be null)
+     * @return a Response object with the result of attempting to retrieve the first element of the collection
+     */
+    override fun execute(argument: String?): Response {
+        return try {
+            Response("Первый элемент коллекции: ${collectionManager.head()}")
+        } catch (e: IndexOutOfBoundsException) {
+            Response("Коллекция пуста")
         }
     }
 }

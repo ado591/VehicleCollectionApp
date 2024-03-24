@@ -2,18 +2,30 @@ package commands
 
 import response.Response
 import utility.XmlWriter
+import java.io.FileNotFoundException
 import java.io.IOException
-import java.util.ResourceBundle
+import java.util.*
 
-class Save: Command("save", "сохранить коллекцию в файл") {
+class Save: Command("save",
+    ResourceBundle.getBundle("message/info").getString("save_description")) {
 
-    override fun execute(args: Array<String>): Response {
-        val filePath = args[0] //todo: implement without magic number
+
+    /**
+     * Writes the collection in xml representation to a file specified by the filePath argument
+     * @param argument a string argument representing the file path to save the collection
+     * @return a Response object with a success message or an error message based on the operation result
+     */
+    override fun execute(argument: String?): Response {
         try {
+            val filePath = argument!!
             XmlWriter().write(collectionManager.getCollection(), filePath)
-        } catch (e: IOException) { // todo: divide exceptions for IO and file not found?
-            return Response(ResourceBundle.getBundle("error_message").getString("invalid_path"))
-        } //todo: catch jackson exceptions
-        return Response(ResourceBundle.getBundle("success_message").getString("save"))
+        } catch (e: FileNotFoundException) {
+            return Response("Файл не найден")
+        } catch (e: IOException) {
+            return Response("Возникла ошибка при записи в файл")
+        } catch(e: NullPointerException) {
+            return Response("Не передан путь к файлу")
+        }
+        return Response("Файл успешно сохранен")
     }
 }
