@@ -6,7 +6,7 @@ import data.Vehicle
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import response.Response
-import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.IllegalArgumentException
 
@@ -18,7 +18,7 @@ class XmlWriter: KoinComponent {
     fun write(collection: Collection<Vehicle>, path: String) {
         try {
             val xmlMapper = XmlMapper()
-            val file = File(path)
+            val file = FileOutputStream(path)
             xmlMapper.writeValue(file, collection)
         } catch (e: IOException) {
             console.print(Response("Возникла ошибка при записи коллекции"))

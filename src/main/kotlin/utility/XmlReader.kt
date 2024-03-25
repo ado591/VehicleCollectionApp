@@ -7,7 +7,9 @@ import data.Vehicle
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import response.Response
+import java.io.BufferedInputStream
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileNotFoundException
 import kotlin.system.exitProcess
 
@@ -22,7 +24,9 @@ class XmlReader(): KoinComponent {
         try {
             val xmlMapper = XmlMapper()
             val file = File(filePath)
-            collection = xmlMapper.readValue(file, object : TypeReference<ArrayDeque<Vehicle>>() {})
+            val bis = BufferedInputStream(FileInputStream(file))
+            collection = xmlMapper.readValue(bis, object : TypeReference<ArrayDeque<Vehicle>>() {})
+            bis.close()
             return collection
         } catch (e: FileNotFoundException) {
             console.print(Response("Файл не найден"))
