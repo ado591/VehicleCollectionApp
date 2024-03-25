@@ -15,6 +15,7 @@ class Exit: Command("exit",
      */
     override fun execute(argument: String?): Response {
         console.print(Response("Программа завершена с кодом 0"))
+        console.getScanner().close()
         exitProcess(0)
     }
 }
