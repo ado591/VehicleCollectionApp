@@ -11,12 +11,12 @@ import java.util.*
 class Console(): KoinComponent {
     private val commandManager: CommandManager by inject()
     private val consoleCommands = commandManager.getCommandMap()
-
     private val scanner: Scanner = Scanner(System.`in`)
 
     fun print(response: Response) {
         println(response.message())
     }
+
 
     fun interactiveMode() {
         do {
@@ -38,6 +38,10 @@ class Console(): KoinComponent {
         } catch (e: NullPointerException) {
             null
         }
+    }
+
+    fun getScanner(): Scanner {
+        return scanner
     }
 
 }

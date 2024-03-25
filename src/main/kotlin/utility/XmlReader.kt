@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import console.Console
 import data.Vehicle
+import exceptions.LoaderException
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import response.Response
@@ -27,11 +28,20 @@ class XmlReader(): KoinComponent {
             val bis = BufferedInputStream(FileInputStream(file))
             collection = xmlMapper.readValue(bis, object : TypeReference<ArrayDeque<Vehicle>>() {})
             bis.close()
+            for (item in collection) {
+                if (!item.isValid()) {
+                    throw LoaderException()
+                }
+            }
             return collection
         } catch (e: FileNotFoundException) {
             console.print(Response("Файл не найден"))
             exitProcess(1)
-        } catch (e: Exception) {
+        } catch(e: LoaderException) {
+            console.print(Response("В файле обнаружены некорректные поля"))
+            exitProcess(1)
+        }
+        catch (e: Exception) {
             console.print(Response("Возникла ошибка при инициализации коллекции"))
             exitProcess(1)
         }

@@ -5,3 +5,6 @@ enum class VehicleType(val id: Int) {
     CHOPPER(2),
     HOVERBOARD(3)
 }
+fun getTypeById(id: Int): VehicleType? {
+    return VehicleType.entries.find { it.id == id }
+}

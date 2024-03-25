@@ -1,10 +1,7 @@
 package commands.extra
 
 import console.Console
-import data.Coordinates
-import data.FuelType
-import data.Vehicle
-import data.VehicleType
+import data.*
 import managers.CollectionManager
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -13,7 +10,6 @@ import java.time.ZonedDateTime
 import kotlin.random.Random
 
 class ItemBuilder(): KoinComponent {
-    // todo: к enum-ам обращаться в том числе по числу. Можно использовать ordinal
     private val collectionManager: CollectionManager by inject()
     private val console: Console by inject()
 
@@ -35,6 +31,8 @@ class ItemBuilder(): KoinComponent {
             addFuelType()
         )
     }
+
+
 
     /**
      * adds vehicle name
@@ -148,14 +146,23 @@ class ItemBuilder(): KoinComponent {
     private fun addVehicleType(): VehicleType {
         console.print(Response("Введите тип транспортного средства. Список транспортных средств: "))
         for (value in VehicleType.entries) {
-            console.print(Response(value.toString()))
+            console.print(Response("$value - ${value.id}"))
         }
+
         do {
-            try {
-                val input = readln().uppercase()
-                return VehicleType.valueOf(input)
-            } catch (e: IllegalArgumentException) {
-                console.print(Response("Введенное значение не соответствует ни одному элементу enum"))
+            val input = readln()
+            if (input.toIntOrNull() != null) {
+                try {
+                    return getTypeById(input.toInt())!!
+                } catch (e: NullPointerException) {
+                    console.print(Response("Нет элемента с таким id"))
+                }
+            } else {
+                try {
+                    return VehicleType.valueOf(input.uppercase())
+                } catch (e: IllegalArgumentException) {
+                    console.print(Response("Введенное значение не соответствует ни одному элементу enum"))
+                }
             }
         } while (true)
     }
@@ -167,14 +174,22 @@ class ItemBuilder(): KoinComponent {
     private fun addFuelType(): FuelType {
         console.print(Response("Введите тип топлива. Список видов топлива: "))
         for (value in FuelType.entries) {
-            console.print(Response(value.toString()))
+            console.print(Response("$value - ${value.id}"))
         }
         do {
-            try {
-                val input = readln().uppercase()
-                return FuelType.valueOf(input)
-            } catch (e: IllegalArgumentException) {
-                console.print(Response("Введенное значение не соответствует ни одному элементу enum"))
+            val input = readln()
+            if (input.toIntOrNull() != null) {
+                try {
+                    return getFuelTypeById(input.toInt())!!
+                } catch (e: NullPointerException) {
+                    console.print(Response("Нет элемента с таким id"))
+                }
+            } else {
+                try {
+                    return FuelType.valueOf(input.uppercase())
+                } catch (e: IllegalArgumentException) {
+                    console.print(Response("Введенное значение не соответствует ни одному элементу enum"))
+                }
             }
         } while (true)
     }

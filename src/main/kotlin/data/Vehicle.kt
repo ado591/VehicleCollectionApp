@@ -2,6 +2,7 @@ package data
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonTypeName
+import commands.extra.Validatable
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -9,15 +10,18 @@ import java.time.format.DateTimeFormatter
 data class Vehicle (
     @JsonIgnore
     var id: Long = genId(),
-    val name: String,
-    val coordinates: Coordinates,
+    var name: String,
+    var coordinates: Coordinates,
     @JsonIgnore
-    val creationDate: ZonedDateTime = ZonedDateTime.now(),
-    val enginePower: Double,
-    val fuelConsumption: Int,
-    val type: VehicleType,
-    val fuelType: FuelType
-): Comparable<Vehicle> {
+    var creationDate: ZonedDateTime = ZonedDateTime.now(),
+    var enginePower: Double,
+    var fuelConsumption: Int,
+    var type: VehicleType,
+    var fuelType: FuelType
+): Comparable<Vehicle>, Validatable {
+
+
+
 
     companion object {
         private var currentId: Long = 0
@@ -36,21 +40,36 @@ data class Vehicle (
         )
     }
 
+    override fun isValid(): Boolean {
+        return (name.isNotBlank())
+                &&(coordinates.x > -89)
+                &&(coordinates.y <= 483)
+                &&(enginePower > 0)
+                &&(fuelConsumption > 0)
+    }
+
     override fun toString(): String {
         val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss z")
         val stringRepresentation: StringBuilder  = StringBuilder()
-            .appendLine("id: ${this.id}")
-            .appendLine("name: ${this.name}")
-            .appendLine("coordinates: x = ${this.coordinates.x}, " +
-                    "y = ${this.coordinates.y}")
-            .appendLine("creation date: ${this.creationDate.format(formatter)}")
-            .appendLine("engine power: ${this.enginePower}")
-            .appendLine("fuel consumption: ${this.fuelConsumption}")
-            .appendLine("vehicle type: ${this.type}")
-            .appendLine("fuel type: ${this.fuelType}")
+            .appendLine("id: $id")
+            .appendLine("name: $name")
+            .appendLine("coordinates: x = ${coordinates.x}, " +
+                    "y = ${coordinates.y}")
+            .appendLine("creation date: ${creationDate.format(formatter)}")
+            .appendLine("engine power: ${enginePower}")
+            .appendLine("fuel consumption: ${fuelConsumption}")
+            .appendLine("vehicle type: ${type}")
+            .appendLine("fuel type: ${fuelType}")
         return stringRepresentation.toString()
     }
-    constructor() : this(genId(), "unknown", Coordinates(), ZonedDateTime.now(), 0.01, 1, VehicleType.CHOPPER, FuelType.ANTIMATTER)
+    constructor() : this(genId(),
+        "unknown",
+        Coordinates(),
+        ZonedDateTime.now(),
+        0.01,
+        1,
+        VehicleType.CHOPPER,
+        FuelType.ANTIMATTER)
 }
 
 
