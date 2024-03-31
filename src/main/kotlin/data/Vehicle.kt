@@ -22,10 +22,14 @@ data class Vehicle(
 ) : Comparable<Vehicle>, Validatable {
 
     companion object {
-        private var currentId: Long = 0 //todo: индексы после clear
+        private var currentId: Long = 0
         fun genId(): Long {
             currentId++
             return currentId
+        }
+
+        fun setCurrentId(id: Long) {
+            currentId = id
         }
     }
 

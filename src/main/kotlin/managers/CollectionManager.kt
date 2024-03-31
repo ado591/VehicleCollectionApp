@@ -86,6 +86,7 @@ class CollectionManager(filepath: String) : KoinComponent {
 
     fun update(id: Int, element: Vehicle) {
         collection[id] = element
+        Vehicle.setCurrentId(collection.size.toLong())
     }
 
     /**
@@ -95,6 +96,7 @@ class CollectionManager(filepath: String) : KoinComponent {
         var newId: Long = 1
         collection
             .forEach { it.id = newId++ }
+        Vehicle.setCurrentId(collection.size.toLong())
     }
 
     /**
@@ -106,5 +108,7 @@ class CollectionManager(filepath: String) : KoinComponent {
         collection
             .filter { vehicle -> vehicle.id >= start }
             .forEach{ it.id -= 1 }
+        Vehicle.setCurrentId(collection.size.toLong())
     }
+
 }

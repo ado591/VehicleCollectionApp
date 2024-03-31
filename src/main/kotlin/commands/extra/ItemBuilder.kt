@@ -111,7 +111,7 @@ class ItemBuilder : KoinComponent {
         console.print(Response("Введите значение fuel consumption: "))
         do {
             val input = readlnOrNull()
-            val number = input?.toIntOrNull() //todo: check
+            val number = input?.toIntOrNull()
             number?.let {
                 if (it > 0) {
                     return it
@@ -134,18 +134,19 @@ class ItemBuilder : KoinComponent {
         }
 
         do {
-            val input = readln()
-            if (input.toIntOrNull() != null) {
-                try {
-                    return getTypeById(input.toInt())!! //todo: fix null
-                } catch (e: NullPointerException) {
-                    console.print(Response("Нет элемента с таким id"))
+            run {
+                val input = readln()
+                val index: Int = input.toIntOrNull() ?: let {
+                    try {
+                        return VehicleType.valueOf(input.uppercase())
+                    } catch (e: IllegalArgumentException) {
+                        console.print(Response("Введенное значение не соответствует ни одному элементу enum"))
+                        return@run
+                    }
                 }
-            } else {
-                try {
-                    return VehicleType.valueOf(input.uppercase())
-                } catch (e: IllegalArgumentException) {
-                    console.print(Response("Введенное значение не соответствует ни одному элементу enum"))
+                return getTypeById(index) ?: let {
+                    console.print(Response("Нет элемента с таким id"))
+                    return@run
                 }
             }
         } while (true)
@@ -161,18 +162,19 @@ class ItemBuilder : KoinComponent {
             console.print(Response("$value - ${value.id}"))
         }
         do {
-            val input = readln()
-            if (input.toIntOrNull() != null) {
-                try {
-                    return getFuelTypeById(input.toInt())!!
-                } catch (e: NullPointerException) {
-                    console.print(Response("Нет элемента с таким id"))
+            run {
+                val input = readln()
+                val index: Int = input.toIntOrNull() ?: let {
+                    try {
+                        return FuelType.valueOf(input.uppercase())
+                    } catch (e: IllegalArgumentException) {
+                        console.print(Response("Введенное значение не соответствует ни одному элементу enum"))
+                        return@run
+                    }
                 }
-            } else {
-                try {
-                    return FuelType.valueOf(input.uppercase())
-                } catch (e: IllegalArgumentException) {
-                    console.print(Response("Введенное значение не соответствует ни одному элементу enum"))
+                return getFuelTypeById(index) ?: let {
+                    console.print(Response("Нет элемента с таким id"))
+                    return@run
                 }
             }
         } while (true)

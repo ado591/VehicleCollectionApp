@@ -28,7 +28,7 @@ class Console : KoinComponent {
         println(response.message())
     }
 
-    fun interactiveMode() {
+    fun interactiveMode(): Nothing {
         do {
             val inputLine = scanner.nextLine().split(" ", limit = 2)
             val commandToProcess: Command
