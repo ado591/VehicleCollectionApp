@@ -11,7 +11,7 @@ class History : Command(
     override fun execute(argument: String?): Response {
         val amount = argument?.toIntOrNull() ?: DEFAULT_AMOUNT
         if (commandManager.getLastCommands(amount).isEmpty()) {
-            return Response("История команд пуста") //todo: проверить, вызывается ли хоть раз
+            return Response("История команд пуста")
         }
         val response = StringBuilder()
             .appendLine("Список последних $amount команд:")

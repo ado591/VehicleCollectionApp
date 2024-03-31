@@ -6,7 +6,8 @@ import java.util.ResourceBundle
 
 class Clear : Command(
     "clear",
-    ResourceBundle.getBundle("message/info").getString("clear_description")) {
+    ResourceBundle.getBundle("message/info").getString("clear_description")
+) {
 
     /**
      * Clears the collection

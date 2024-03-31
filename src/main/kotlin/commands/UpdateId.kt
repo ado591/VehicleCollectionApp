@@ -15,18 +15,20 @@ class UpdateId : Command(
      * @return a Response object with a success message or an error message based on the operation result
      */
     override fun execute(argument: String?): Response {
-        val args: List<String> = argument?.split(" ") ?: throw InvalidArgumentException()
-        val id: Int = (args.getOrNull(0)?.toInt()
-            ?: throw InvalidArgumentException()) - 1
+        val args: List<String> =
+            argument?.split(" ") ?: throw InvalidArgumentException("Не передан аргумент для команды ${name()}")
+        val id: Int = (args[0].let {
+            it.toIntOrNull() ?: throw InvalidArgumentException("Аргумент команды должен быть числом")
+        }) - 1
         val flag: String? = args.getOrNull(1)
         if (collectionManager.isEmpty()) {
             return Response("Коллекция пуста")
         } else if (!(collectionManager.inBounds(id))) {
-            return Response("Указан некорректный индекс")
+            throw InvalidArgumentException("Указан некорректный индекс")
         }
         val newElement: Vehicle = flag?.let {
             if (!checkFlag(it))
-                throw InvalidArgumentException()
+                throw InvalidArgumentException("Передан неверный флаг")
             builder.autoAdd()
         } ?: builder.consoleAdd()
         newElement.id = id.toLong() + 1

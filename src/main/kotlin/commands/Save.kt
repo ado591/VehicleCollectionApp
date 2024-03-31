@@ -1,5 +1,6 @@
 package commands
 
+import exceptions.InvalidArgumentException
 import response.Response
 import utility.XmlWriter
 import java.io.FileNotFoundException
@@ -17,13 +18,13 @@ class Save : Command(
      * @return a Response object with a success message or an error message based on the operation result
      */
     override fun execute(argument: String?): Response {
-        val filePath: String = argument ?: return Response("Не передан путь к файлу")//todo: одинаковые ошибки на null и ""
+        val filePath: String =
+            argument ?: throw InvalidArgumentException("Не передан путь к файлу")
         try {
             XmlWriter().write(collectionManager.getCollection(), filePath)
         } catch (e: FileNotFoundException) {
             return Response("Файл не найден")
         } catch (e: IOException) {
-            e.printStackTrace()
             return Response("Возникла ошибка при записи коллекции")
         } catch (e: IllegalArgumentException) {
             return Response("Неверно указан путь к файлу")

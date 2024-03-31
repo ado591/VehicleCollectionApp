@@ -60,7 +60,7 @@ class ExecuteScript : Command(
                 }
             var commandArgument = line.split(" ").getOrNull(1)
             if (commandToProcess is Autogeneratable) {
-                commandArgument = commandArgument?.let{ "$it --auto" } ?: "--auto"
+                commandArgument = commandArgument?.let { "$it --auto" } ?: "--auto"
             }
             console.print(commandToProcess.execute(commandArgument))
         }

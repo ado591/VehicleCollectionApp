@@ -1,4 +1,4 @@
 package exceptions
 
-class InvalidArgumentException : Exception() { //todo: сообщение
+class InvalidArgumentException(message: String) : Exception(message) {
 }

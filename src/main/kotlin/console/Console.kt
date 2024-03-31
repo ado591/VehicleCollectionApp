@@ -1,6 +1,7 @@
 package console
 
 import commands.Command
+import exceptions.InvalidArgumentException
 import exceptions.UnknownCommandException
 import managers.CommandManager
 import org.koin.core.component.KoinComponent
@@ -31,17 +32,21 @@ class Console : KoinComponent {
     fun interactiveMode(): Nothing {
         do {
             val inputLine = scanner.nextLine().split(" ", limit = 2)
+            val commandArguments = inputLine
+                .takeIf { it.size > 1 }
+                ?.drop(1)
+                ?.joinToString(" ").takeUnless { it.isNullOrBlank() }
             val commandToProcess: Command
             try {
-                commandToProcess = parseCommand(inputLine) ?: throw UnknownCommandException() //todo: cringe
+                commandToProcess = parseCommand(inputLine) ?: throw UnknownCommandException()
             } catch (e: UnknownCommandException) {
                 print(Response("Неизвестная команда"))
                 continue
             }
             try {
-                print(commandToProcess.execute(inputLine.getOrNull(1)))
-            } catch (e: IllegalArgumentException) {
-                print(Response(e.toString()))
+                print(commandToProcess.execute(commandArguments))
+            } catch (e: InvalidArgumentException) {
+                print(Response(e.message.toString()))
             } finally {
                 commandManager.addToHistory(commandToProcess)
             }

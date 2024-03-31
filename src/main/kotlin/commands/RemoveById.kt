@@ -1,5 +1,6 @@
 package commands
 
+import exceptions.InvalidArgumentException
 import response.Response
 import java.util.ResourceBundle
 
@@ -15,9 +16,9 @@ class RemoveById : Command(
     override fun execute(argument: String?): Response {
         val id: Int = (argument?.let {
             it.toIntOrNull()
-                ?: return Response("Аргумент команды должен быть числом")
+                ?: throw InvalidArgumentException("Аргумент команды должен быть числом")
         }
-            ?: return Response("Не передан индекс")) - 1
+            ?: throw InvalidArgumentException("Не передан индекс")) - 1
         return if (collectionManager.inBounds(id)) {
             collectionManager.removeById(id)
             collectionManager.rearrange(id)

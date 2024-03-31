@@ -18,7 +18,7 @@ class Add : Command(
     override fun execute(argument: String?): Response {
         val newElement = argument?.let {
             if (!checkFlag(it))
-                throw InvalidArgumentException()
+                throw InvalidArgumentException("Передан неверный флаг")
             builder.autoAdd()
         } ?: builder.consoleAdd()
         collectionManager.add(newElement)

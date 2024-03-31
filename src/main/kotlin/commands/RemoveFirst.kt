@@ -5,7 +5,8 @@ import java.util.ResourceBundle
 
 class RemoveFirst : Command(
     "remove_first",
-    ResourceBundle.getBundle("message/info").getString("removeFirst_description")) {
+    ResourceBundle.getBundle("message/info").getString("removeFirst_description")
+) {
 
     /**
      *  Removes first element in the collection

@@ -1,4 +1,4 @@
 package exceptions
 
-class UnknownCommandException : Exception() { //todo: todo
+class UnknownCommandException : Exception() {
 }

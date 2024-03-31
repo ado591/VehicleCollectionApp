@@ -21,4 +21,12 @@ class PrintAsc : Command( //todo: сортировка по полям
         }
         return Response(message.toString())
     }
+
+    /*private fun customSorting(fields: List<String>): Response {
+        val sortedCollection = collectionManager
+            .getCollection()
+            .sortedWith(compareBy(*fields.map{
+
+            }))
+    }*/
 }

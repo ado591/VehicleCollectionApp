@@ -1,6 +1,7 @@
 package commands
 
 import commands.extra.Autogeneratable
+import data.Vehicle
 import exceptions.InvalidArgumentException
 import response.Response
 import java.util.ResourceBundle
@@ -18,7 +19,7 @@ class AddIfMin : Command(
     override fun execute(argument: String?): Response {
         val newElement = argument?.let {
             if (!checkFlag(it))
-                throw InvalidArgumentException()
+                throw InvalidArgumentException("Передан неверный флаг")
             builder.autoAdd()
         } ?: builder.consoleAdd()
         console.print(Response(newElement.toString()))
@@ -29,6 +30,7 @@ class AddIfMin : Command(
             collectionManager.add(newElement)
             Response("Элемент успешно добавлен в коллекцию")
         } else {
+            Vehicle.setCurrentId(collectionManager.getSize().toLong())
             Response("Этот элемент не является минимумом для коллекции")
         }
     }
