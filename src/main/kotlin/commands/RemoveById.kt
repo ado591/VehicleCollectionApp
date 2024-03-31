@@ -6,7 +6,8 @@ import java.util.ResourceBundle
 
 class RemoveById : Command(
     "remove_by_id",
-    ResourceBundle.getBundle("message/info").getString("removeById_description")) {
+    ResourceBundle.getBundle("message/info").getString("removeById_description")
+) {
 
     /**
      * Removes item by given id iff argument represents index in current collection

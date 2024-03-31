@@ -12,6 +12,7 @@ import java.io.BufferedInputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
+import java.io.IOException
 
 class XmlReader : KoinComponent {
     private val console: Console by inject()
@@ -41,7 +42,7 @@ class XmlReader : KoinComponent {
         } catch (e: LoaderException) {
             console.print(Response("В файле обнаружены некорректные поля"))
             console.getScanner().closeWithCleanup(1)
-        } catch (e: Exception) { // todo: либо убрать, либо сделать конкретнее
+        } catch (e: IOException) {
             console.print(Response("Возникла ошибка при инициализации коллекции"))
             console.getScanner().closeWithCleanup(1)
         }

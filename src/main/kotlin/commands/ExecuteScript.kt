@@ -34,13 +34,8 @@ class ExecuteScript : Command(
      * @param argument - filePath
      */
     override fun execute(argument: String?): Response {
-        val file: File
-        try {
-            file = argument?.let { File(argument).absoluteFile } ?: run {
-                return Response("Не указано имя скрипта для исполнения")
-            }
-        } catch (e: FileNotFoundException) {
-            return Response("Файл не найден")
+        val file: File = argument?.let { File(argument).absoluteFile } ?: run {
+            return Response("Не указано имя скрипта для исполнения")
         }
         try {
             addScript(file.toString())
@@ -48,7 +43,12 @@ class ExecuteScript : Command(
             console.print(Response("Обнаружена рекурсия!!"))
             console.getScanner().closeWithCleanup(1)
         }
-        val lines = file.readLines()
+        val lines: List<String>
+        try {
+            lines = file.readLines()
+        } catch (e: FileNotFoundException) {
+            return Response("Файл не найден")
+        }
         for (line in lines) {
             if (line.isBlank()) {
                 continue
