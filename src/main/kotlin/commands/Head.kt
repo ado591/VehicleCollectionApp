@@ -1,9 +1,10 @@
 package commands
 
 import response.Response
-import java.util.*
+import java.util.ResourceBundle
 
-class Head(): Command("head",
+class Head : Command(
+    "head",
     ResourceBundle.getBundle("message/info").getString("head_description")) {
 
     /**
@@ -12,10 +13,10 @@ class Head(): Command("head",
      * @return a Response object with the result of attempting to retrieve the first element of the collection
      */
     override fun execute(argument: String?): Response {
-        return try {
-            Response("Первый элемент коллекции: ${collectionManager.head()}")
-        } catch (e: IndexOutOfBoundsException) {
+        return if (collectionManager.isEmpty()) {
             Response("Коллекция пуста")
+        } else {
+            Response("Первый элемент коллекции: ${collectionManager.head()}")
         }
     }
 }

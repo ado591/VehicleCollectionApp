@@ -6,6 +6,7 @@ enum class FuelType(val id: Int) {
     MANPOWER(3),
     ANTIMATTER(4)
 }
+
 fun getFuelTypeById(id: Int): FuelType? {
     return FuelType.entries.find { it.id == id }
 }

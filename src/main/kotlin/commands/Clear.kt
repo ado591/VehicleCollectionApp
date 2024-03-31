@@ -1,9 +1,10 @@
 package commands
 
 import response.Response
-import java.util.*
+import java.util.ResourceBundle
 
-class Clear(): Command("clear",
+class Clear : Command(
+    "clear",
     ResourceBundle.getBundle("message/info").getString("clear_description")) {
 
     /**

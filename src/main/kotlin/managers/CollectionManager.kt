@@ -6,68 +6,99 @@ import utility.XmlReader
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-class CollectionManager(filepath: String): KoinComponent {
+class CollectionManager(filepath: String) : KoinComponent {
     private var collection: ArrayDeque<Vehicle> = XmlReader().parseDocument(filepath)
     private val initTime: ZonedDateTime = ZonedDateTime.now()
 
+    /**
+     * adds element to the collection
+     */
     fun add(e: Vehicle) {
         collection.add(e)
     }
+
+    /**
+     * @return minimum of the collection
+     */
     fun getMin(): Vehicle {
-       return collection.minBy { it }
+        return collection.min()
     }
+
+    /**
+     * clears current collection
+     */
     fun clear() {
         collection.clear()
     }
+
     fun isEmpty(): Boolean {
         return collection.isEmpty()
     }
-    fun head(): Vehicle {
-        try {
-            return collection.first()
-        } catch(e: IndexOutOfBoundsException) {
-            throw e
-        }
+
+    /**
+     * @return first element of the collection
+     */
+    fun head(): Vehicle? {
+        return collection.firstOrNull()
     }
+
+    /**
+     * @return time of initialization of current collection
+     */
 
     fun getInitTime(): String {
         val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss z")
         return initTime.format(formatter)
     }
 
+    /**
+     * @return current collection
+     */
+
     fun getCollection(): ArrayDeque<Vehicle> {
         return collection
     }
+
+    /**
+     * @return size of the collection
+     */
     fun getSize(): Int {
         return collection.size
     }
-    fun removeById(id: Int) {
-        try {
-            collection.removeAt(id)
-        } catch (e: IndexOutOfBoundsException) {
-            throw e
-        }
-    }
 
-    fun update(id: Int, element: Vehicle) {
-        try {
-            collection[id] = element
-        } catch (e: IndexOutOfBoundsException) {
-            throw e
-        }
+    fun inBounds(id: Int): Boolean {
+        return id >= 0 && id < collection.size
     }
 
     /**
-     * generates new IDs for the whole collection
+     * removes element from the collection
+     * @param id - id of the element to be removed
+     */
+    fun removeById(id: Int) {
+        collection.removeAt(id)
+    }
+
+    /**
+     * updates element in collection
+     * @param id - id of the element
+     * @param element - new element
+     */
+
+    fun update(id: Int, element: Vehicle) {
+        collection[id] = element
+    }
+
+    /**
+     * Generating new IDs of each vehicle
      */
     fun rearrange() {
         var newId: Long = 1
         collection
-            .forEach{it.id = newId++}
+            .forEach { it.id = newId++ }
     }
 
     /**
-     * generates new IDs for all elements after removed
+     * Generating new IDs of each vehicle that has an id greater than or equal to the specified start value
      * @param start -- start id for generating
      */
 

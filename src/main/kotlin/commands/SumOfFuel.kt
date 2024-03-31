@@ -1,9 +1,10 @@
 package commands
 
 import response.Response
-import java.util.*
+import java.util.ResourceBundle
 
-class SumOfFuel(): Command("sum_of_fuel_consumption",
+class SumOfFuel : Command(
+    "sum_of_fuel_consumption",
     ResourceBundle.getBundle("message/info").getString("sumOfFuel_description")) {
 
     /**

@@ -10,8 +10,8 @@ import org.koin.dsl.module
 val consoleAppModule = module {
     singleOf(::CommandManager)
     singleOf(::Console)
-    single(createdAtStart = true){
-        val filePath = System.getenv("FILE_PATH")
+    single(createdAtStart = true) {
+        val filePath = System.getenv("FILE_PATH") ?: "src/main/files/loadfile.xml"
         CollectionManager(filePath)
     }
     singleOf(::ItemBuilder)

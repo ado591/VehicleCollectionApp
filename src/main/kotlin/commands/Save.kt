@@ -4,9 +4,10 @@ import response.Response
 import utility.XmlWriter
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.util.*
+import java.util.ResourceBundle
 
-class Save: Command("save",
+class Save : Command(
+    "save",
     ResourceBundle.getBundle("message/info").getString("save_description")) {
 
 
@@ -16,15 +17,13 @@ class Save: Command("save",
      * @return a Response object with a success message or an error message based on the operation result
      */
     override fun execute(argument: String?): Response {
+        val filePath: String = argument ?: return Response("Не передан путь к файлу")
         try {
-            val filePath = argument!!
             XmlWriter().write(collectionManager.getCollection(), filePath)
         } catch (e: FileNotFoundException) {
             return Response("Файл не найден")
         } catch (e: IOException) {
-            return Response("Возникла ошибка при записи в файл")
-        } catch(e: NullPointerException) {
-            return Response("Не передан путь к файлу")
+            return Response("Возникла ошибка при записи в файл") //todo: подумать над ошибками
         }
         return Response("Файл успешно сохранен")
     }

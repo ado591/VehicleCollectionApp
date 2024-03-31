@@ -4,7 +4,7 @@ import commands.Command
 import org.koin.core.component.KoinComponent
 import kotlin.reflect.full.createInstance
 
-class CommandManager(): KoinComponent {
+class CommandManager : KoinComponent {
     private val commandHistory = ArrayDeque<Command>()
     private val allCommands = Command::class.sealedSubclasses
         .map { it.createInstance() }
@@ -12,6 +12,7 @@ class CommandManager(): KoinComponent {
     fun getCommandList(): List<Command> {
         return allCommands
     }
+
     fun getCommandMap(): Map<String, Command>{
         return allCommands.associateBy { it.name() }
     }

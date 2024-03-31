@@ -1,9 +1,10 @@
 package commands
 
 import response.Response
-import java.util.*
+import java.util.ResourceBundle
 
-class PrintAsc(): Command("print_ascending",
+class PrintAsc : Command( //todo: сортировка по полям
+    "print_ascending",
     ResourceBundle.getBundle("message/info").getString("printAsc_description")) {
 
     /**

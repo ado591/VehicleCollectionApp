@@ -1,0 +1,35 @@
+<vehicles>
+    <vehicle>
+        <name>Speedboat</name>
+        <coordinates>
+            <x>10</x>
+            <y>20.5</y>
+        </coordinates>
+        <enginePower>300.0</enginePower>
+        <fuelConsumption>50</fuelConsumption>
+        <type>SHIP</type>
+        <fuelType>GASOLINE</fuelType>
+    </vehicle>
+    <vehicle>
+        <name>Helicopter</name>
+        <coordinates>
+            <x>5</x>
+            <y>15.75</y>
+        </coordinates>
+        <enginePower>500.0</enginePower>
+        <fuelConsumption>80</fuelConsumption>
+        <type>CHOPPER</type>
+        <fuelType>DIESEL</fuelType>
+    </vehicle>
+    <vehicle>
+        <name>Hoverboard</name>
+        <coordinates>
+            <x>2</x>
+            <y>7.25</y>
+        </coordinates>
+        <enginePower>100.0</enginePower>
+        <fuelConsumption>20</fuelConsumption>
+        <type>HOVERBOARD</type>
+        <fuelType>MANPOWER</fuelType>
+    </vehicle>
+</vehicles>
