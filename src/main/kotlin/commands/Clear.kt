@@ -1,10 +1,13 @@
 package commands
 
+import data.Vehicle
 import response.Response
-import java.util.*
+import java.util.ResourceBundle
 
-class Clear(): Command("clear",
-    ResourceBundle.getBundle("message/info").getString("clear_description")) {
+class Clear : Command(
+    "clear",
+    ResourceBundle.getBundle("message/info").getString("clear_description")
+) {
 
     /**
      * Clears the collection
@@ -13,6 +16,7 @@ class Clear(): Command("clear",
      */
     override fun execute(argument: String?): Response {
         collectionManager.clear()
+        Vehicle.setCurrentId(0)
         return Response("Коллекция успешно очищена")
     }
 }

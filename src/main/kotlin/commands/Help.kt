@@ -3,7 +3,8 @@ package commands
 import response.Response
 import java.util.ResourceBundle
 
-class Help(): Command("help",
+class Help : Command(
+    "help",
     ResourceBundle.getBundle("message/info").getString("help_description")){
 
     /**
@@ -13,10 +14,8 @@ class Help(): Command("help",
     override fun execute(argument: String?): Response {
         val result: StringBuilder = StringBuilder()
         for (command in commandManager.getCommandList()) {
-           result.appendLine("${command.name()}: ${command.description()}")
+            result.appendLine("${command.name()}: ${command.description()}")
         }
         return Response(result.toString())
     }
-
-
 }

@@ -1,9 +1,11 @@
 package commands
 
 import response.Response
-import java.util.* // todo: no .* imports
+import java.util.ResourceBundle
 
-class Show(): Command("show",
+
+class Show : Command(
+    "show",
     ResourceBundle.getBundle("message/info").getString("show_description")) {
 
     /**

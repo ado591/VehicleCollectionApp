@@ -1,9 +1,10 @@
 package commands
 
 import response.Response
-import java.util.*
+import java.util.ResourceBundle
 
-class Info(): Command("info",
+class Info : Command(
+    "info",
     ResourceBundle.getBundle("message/info").getString("info_description")) {
 
 

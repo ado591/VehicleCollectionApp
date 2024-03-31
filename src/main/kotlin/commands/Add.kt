@@ -1,26 +1,26 @@
 package commands
 
 import commands.extra.Autogeneratable
-import data.Vehicle
+import exceptions.InvalidArgumentException
 import response.Response
-import java.util.*
+import java.util.ResourceBundle
 
-class Add(): Command("add",
-    ResourceBundle.getBundle("message/info").getString("add_description")), Autogeneratable {
+class Add : Command(
+    "add",
+    ResourceBundle.getBundle("message/info").getString("add_description")
+), Autogeneratable {
 
     /**
      * Adds element to collection using ItemBuilder class and .consoleAdd() method
-     * @param argument (should be null)
+     * @param argument -- null for console input, --auto for calling built-in method
      * @return a Response object with a success message after adding an element
      */
     override fun execute(argument: String?): Response {
-        val newElement: Vehicle = when (argument) {
-            "--auto" -> builder.autoAdd()
-            null -> builder.consoleAdd()
-            else -> {
-                return Response("Неизвестный флаг команды ${this.name()}")
-            }
-        }
+        val newElement = argument?.let {
+            if (!checkFlag(it))
+                throw InvalidArgumentException("Передан неверный флаг")
+            builder.autoAdd()
+        } ?: builder.consoleAdd()
         collectionManager.add(newElement)
         return Response("Элемент успешно добавлен")
     }

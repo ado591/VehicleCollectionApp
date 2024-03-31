@@ -1,11 +1,13 @@
 package commands
 
+import console.closeWithCleanup
 import response.Response
-import java.util.*
-import kotlin.system.exitProcess
+import java.util.ResourceBundle
 
-class Exit: Command("exit",
-    ResourceBundle.getBundle("message/info").getString("exit_description")) {
+class Exit : Command(
+    "exit",
+    ResourceBundle.getBundle("message/info").getString("exit_description")
+) {
 
     /**
      * Prints a response message indicating that the program has ended with exit code 0.
@@ -15,7 +17,6 @@ class Exit: Command("exit",
      */
     override fun execute(argument: String?): Response {
         console.print(Response("Программа завершена с кодом 0"))
-        console.getScanner().close()
-        exitProcess(0)
+        console.getScanner().closeWithCleanup(0)
     }
 }

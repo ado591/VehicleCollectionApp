@@ -1,10 +1,13 @@
 package commands
 
+import exceptions.InvalidArgumentException
 import response.Response
-import java.util.*
+import java.util.ResourceBundle
 
-class RemoveById(): Command("remove_by_id",
-    ResourceBundle.getBundle("message/info").getString("removeById_description")) {
+class RemoveById : Command(
+    "remove_by_id",
+    ResourceBundle.getBundle("message/info").getString("removeById_description")
+) {
 
     /**
      * Removes item by given id iff argument represents index in current collection
@@ -12,19 +15,17 @@ class RemoveById(): Command("remove_by_id",
      * @return a Response object with a success message or an error message based on the operation result
      */
     override fun execute(argument: String?): Response {
-        val id: Int
-        return try {
-            id = argument!!.toInt() - 1
+        val id: Int = (argument?.let {
+            it.toIntOrNull()
+                ?: throw InvalidArgumentException("Аргумент команды должен быть числом")
+        }
+            ?: throw InvalidArgumentException("Не передан индекс")) - 1
+        return if (collectionManager.inBounds(id)) {
             collectionManager.removeById(id)
             collectionManager.rearrange(id)
             Response("Элемент успешно удален")
-        } catch (e: NumberFormatException) {
-            Response("Аргумент команды должен быть числом")
-        } catch (e: IndexOutOfBoundsException) {
+        } else {
             Response("Указан некорректный индекс")
-        } catch(e: NullPointerException) {
-            Response("Не передан индекс")
         }
     }
-
 }

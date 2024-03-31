@@ -2,15 +2,13 @@ package commands.extra
 
 import console.Console
 import data.*
-import managers.CollectionManager
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import response.Response
-import java.time.ZonedDateTime
+import java.util.ResourceBundle
 import kotlin.random.Random
 
-class ItemBuilder(): KoinComponent {
-    private val collectionManager: CollectionManager by inject()
+class ItemBuilder : KoinComponent {
     private val console: Console by inject()
 
     /**
@@ -18,21 +16,15 @@ class ItemBuilder(): KoinComponent {
      * @return a valid Vehicle element
      */
     fun consoleAdd(): Vehicle {
-        val id = (collectionManager.getSize() + 1).toLong()
-        val creationDate: ZonedDateTime = ZonedDateTime.now()
         return Vehicle(
-            id,
-            addName(),
-            addCoordinates(),
-            creationDate,
-            addEnginePower(),
-            addFuelConsumption(),
-            addVehicleType(),
-            addFuelType()
+            name = addName(),
+            coordinates = addCoordinates(),
+            enginePower = addEnginePower(),
+            fuelConsumption = addFuelConsumption(),
+            type = addVehicleType(),
+            fuelType = addFuelType()
         )
     }
-
-
 
     /**
      * adds vehicle name
@@ -40,15 +32,11 @@ class ItemBuilder(): KoinComponent {
     private fun addName(): String {
         console.print(Response("Введите название: "))
         do {
-            try {
-                val name: String = readln()
-                if (name.isNotBlank()) {
-                    return name
-                } else {
-                    console.print(Response("Строка не должна быть пустой!"))
-                }
-            } catch (e: NullPointerException) {
-                console.print(Response("Поле не может быть null!"))
+            val name: String? = readlnOrNull()
+            if (name.isNullOrBlank()) {
+                console.print(Response(ResourceBundle.getBundle("messages/error").getString("empty_line")))
+            } else {
+                return name
             }
         } while (true)
     }
@@ -60,36 +48,40 @@ class ItemBuilder(): KoinComponent {
         console.print(Response("Введите координату Х: "))
         var x: Int
         var y: Float
-        do {
-            try {
+        run {
+            do {
                 val input = readlnOrNull()
-                val number = input?.toInt()
-                if (number != null && number > -89) {
-                    x = number
-                    break
-                } else {
-                    throw NumberFormatException()
+                val number = input?.toIntOrNull()
+                number?.let {
+                    if (it > MIN_X) {
+                        x = it
+                        return@run
+                    } else {
+                        console.print(Response("Ошибка ввода. Число должно быть больше $MIN_X"))
+                    }
+                } ?: run {
+                    console.print(Response("Ошибка ввода. Введите число типа int"))
                 }
-            } catch (e: NumberFormatException) {
-                console.print(Response("Ошибка ввода. Введите число типа int, которое больше -89"))
-            }
-        } while (true)
+            } while (true)
+        }
 
         console.print(Response("Введите координату Y: "))
-        do {
-            try {
+        run {
+            do {
                 val input = readlnOrNull()
-                val number = input?.toFloat()
-                if (number != null && number <= 483) {
-                    y = number
-                    break
-                } else {
-                    throw NumberFormatException()
+                val number = input?.toFloatOrNull()
+                number?.let {
+                    if (it <= MAX_Y) {
+                        y = it
+                        return@run
+                    } else {
+                        console.print(Response("Ошибка ввода. Число не должно превосходить $MAX_Y"))
+                    }
+                } ?: run {
+                    console.print(Response("Ошибка ввода. Введите число типа float"))
                 }
-            } catch (e: NumberFormatException) {
-                console.print(Response("Ошибка ввода. Введите число типа float, которое не превосходит 483"))
-            }
-        } while (true)
+            } while (true)
+        }
         return Coordinates(x, y)
     }
 
@@ -97,21 +89,17 @@ class ItemBuilder(): KoinComponent {
      * adds engine power
      */
     private fun addEnginePower(): Double {
-        var enginePower: Double
         console.print(Response("Введите значение engine power: "))
         do {
-            try {
-                val input = readlnOrNull()
-                val number = input?.toDouble()
-                if (number != null && number > 0) {
-                    enginePower = number
-                    return enginePower
+            val input = readlnOrNull()
+            val number = input?.toDoubleOrNull()
+            number?.let {
+                if (it > 0) {
+                    return it
                 } else {
-                    throw NumberFormatException()
+                    console.print(Response("Ошибка ввода. Введите положительное число"))
                 }
-            } catch (e: NumberFormatException) {
-                console.print(Response("Ошибка ввода. Введите положительное число типа double"))
-            }
+            } ?: console.print(Response("Ошибка ввода. Введите положительное число типа double"))
         } while (true)
     }
 
@@ -120,48 +108,45 @@ class ItemBuilder(): KoinComponent {
      * @return valid fuel consumption
      */
     private fun addFuelConsumption(): Int {
-        var fuelConsumption: Int
         console.print(Response("Введите значение fuel consumption: "))
         do {
-            try {
-                val input = readlnOrNull()
-                val number = input?.toInt()
-                if (number != null && number > 0) {
-                    fuelConsumption = number
-                    return fuelConsumption
+            val input = readlnOrNull()
+            val number = input?.toIntOrNull()
+            number?.let {
+                if (it > 0) {
+                    return it
                 } else {
-                    throw NumberFormatException()
+                    console.print(Response("Ошибка ввода. Введите положительное число"))
                 }
-            } catch (e: NumberFormatException) {
-                console.print(Response("Ошибка ввода. Введите положительное число типа int"))
-            }
+            } ?: console.print(Response("Ошибка ввода. Введите положительное число типа int"))
         } while (true)
     }
-
 
     /**
      * adds Vehicle type
      * @return vehicleType listed in VehicleType data class
      */
     private fun addVehicleType(): VehicleType {
+
         console.print(Response("Введите тип транспортного средства. Список транспортных средств: "))
         for (value in VehicleType.entries) {
             console.print(Response("$value - ${value.id}"))
         }
 
         do {
-            val input = readln()
-            if (input.toIntOrNull() != null) {
-                try {
-                    return getTypeById(input.toInt())!!
-                } catch (e: NullPointerException) {
-                    console.print(Response("Нет элемента с таким id"))
+            run {
+                val input = readln()
+                val index: Int = input.toIntOrNull() ?: let {
+                    try {
+                        return VehicleType.valueOf(input.uppercase())
+                    } catch (e: IllegalArgumentException) {
+                        console.print(Response("Введенное значение не соответствует ни одному элементу enum"))
+                        return@run
+                    }
                 }
-            } else {
-                try {
-                    return VehicleType.valueOf(input.uppercase())
-                } catch (e: IllegalArgumentException) {
-                    console.print(Response("Введенное значение не соответствует ни одному элементу enum"))
+                return getTypeById(index) ?: let {
+                    console.print(Response("Нет элемента с таким id"))
+                    return@run
                 }
             }
         } while (true)
@@ -177,36 +162,43 @@ class ItemBuilder(): KoinComponent {
             console.print(Response("$value - ${value.id}"))
         }
         do {
-            val input = readln()
-            if (input.toIntOrNull() != null) {
-                try {
-                    return getFuelTypeById(input.toInt())!!
-                } catch (e: NullPointerException) {
-                    console.print(Response("Нет элемента с таким id"))
+            run {
+                val input = readln()
+                val index: Int = input.toIntOrNull() ?: let {
+                    try {
+                        return FuelType.valueOf(input.uppercase())
+                    } catch (e: IllegalArgumentException) {
+                        console.print(Response("Введенное значение не соответствует ни одному элементу enum"))
+                        return@run
+                    }
                 }
-            } else {
-                try {
-                    return FuelType.valueOf(input.uppercase())
-                } catch (e: IllegalArgumentException) {
-                    console.print(Response("Введенное значение не соответствует ни одному элементу enum"))
+                return getFuelTypeById(index) ?: let {
+                    console.print(Response("Нет элемента с таким id"))
+                    return@run
                 }
             }
         } while (true)
     }
 
+
     /**
      * Automatically generates a valid item for Vehicle collection
      */
     fun autoAdd(): Vehicle {
-        val id = collectionManager.getSize().toLong() + 1
         val name = "Autogenerated item"
         val coordinates = Coordinates(Random.nextInt(-88, Int.MAX_VALUE), Random.nextFloat() * 484)
-        val creationDate = ZonedDateTime.now()
         val enginePower = Random.nextDouble() * Double.MAX_VALUE
         val fuelConsumption = Random.nextInt(1, Int.MAX_VALUE)
         val type = VehicleType.entries.toTypedArray().random()
         val fuelType = FuelType.entries.toTypedArray().random()
-        return Vehicle(id, name, coordinates, creationDate, enginePower, fuelConsumption, type, fuelType)
+        return Vehicle(
+            name = name,
+            coordinates = coordinates,
+            enginePower = enginePower,
+            fuelConsumption = fuelConsumption,
+            type = type,
+            fuelType = fuelType
+        )
     }
 
 }
