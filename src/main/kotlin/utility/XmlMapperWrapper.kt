@@ -4,7 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 
 
-class XmlMapperWrapper{
+class XmlMapperWrapper {
     companion object {
         val xmlObjectMapper: XmlMapper = XmlMapper.builder().addModule(JavaTimeModule()).build()
     }

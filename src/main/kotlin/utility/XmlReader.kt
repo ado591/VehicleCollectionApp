@@ -21,28 +21,30 @@ class XmlReader : KoinComponent {
      * @return collection of vehicles, assigned in xml file
      */
     fun parseDocument(filePath: String): ArrayDeque<Vehicle> {
-        val collection: ArrayDeque<Vehicle>
+        val collection: ArrayDeque<Vehicle> = ArrayDeque()
         try {
             val xmlMapper = XmlMapperWrapper.xmlObjectMapper
             val file = File(filePath)
-            val bis = BufferedInputStream(FileInputStream(file))
-            collection = xmlMapper.readValue(bis, object : TypeReference<ArrayDeque<Vehicle>>() {})
-            bis.close()
+            FileInputStream(file).use { fis ->
+                BufferedInputStream(fis).use { bis ->
+                    collection.addAll(xmlMapper.readValue(bis, object : TypeReference<ArrayDeque<Vehicle>>() {}))
+                }
+            }
             for (item in collection) {
                 if (!item.isValid()) {
                     throw LoaderException()
                 }
             }
-            return collection
         } catch (e: FileNotFoundException) {
             console.print(Response("Файл не найден"))
             console.getScanner().closeWithCleanup(1)
         } catch (e: LoaderException) {
             console.print(Response("В файле обнаружены некорректные поля"))
             console.getScanner().closeWithCleanup(1)
-        } catch (e: Exception) { //todo: либо убрать, либо сделать конкретнее
+        } catch (e: Exception) { // todo: либо убрать, либо сделать конкретнее
             console.print(Response("Возникла ошибка при инициализации коллекции"))
             console.getScanner().closeWithCleanup(1)
         }
+        return collection
     }
 }
