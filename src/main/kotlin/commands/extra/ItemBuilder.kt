@@ -33,11 +33,10 @@ class ItemBuilder : KoinComponent {
         console.print(Response("Введите название: "))
         do {
             val name: String? = readlnOrNull()
-            if (name.isNullOrBlank()) {
-                console.print(Response(ResourceBundle.getBundle("messages/error").getString("empty_line")))
-            } else {
+            if (!name.isNullOrBlank()){
                 return name
             }
+            console.print(Response(ResourceBundle.getBundle("messages/error").getString("empty_line")))
         } while (true)
     }
 
