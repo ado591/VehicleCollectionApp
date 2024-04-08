@@ -13,6 +13,7 @@ repositories {
 dependencies {
     val koin_version = "3.5.0"
     val kotlinVersion = "1.9.0"
+    //TESTS
     testImplementation(kotlin("test"))
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
@@ -25,6 +26,7 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     //reflections
     implementation(kotlin("reflect"))
+
 }
 
 

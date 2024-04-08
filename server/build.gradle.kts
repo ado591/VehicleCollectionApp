@@ -13,6 +13,9 @@ repositories {
 dependencies {
     val koin_version = "3.5.0"
     val kotlinVersion = "1.9.0"
+    //SUBPROJECTS
+    implementation(project(":common"))
+    //TESTS
     testImplementation(kotlin("test"))
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
@@ -25,6 +28,9 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     //reflections
     implementation(kotlin("reflect"))
+    //log4j
+    implementation("org.apache.logging.log4j:log4j-api:2.14.1")
+    implementation("org.apache.logging.log4j:log4j-core:2.14.1")
 }
 
 
