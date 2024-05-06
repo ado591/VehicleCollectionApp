@@ -5,24 +5,26 @@ import org.koin.core.component.KoinComponent
 import kotlin.reflect.full.createInstance
 
 class CommandManager : KoinComponent {
-    private val commandHistory = ArrayDeque<Command>()
     private val allCommands = Command::class.sealedSubclasses
         .map { it.createInstance() }
+    private val userCommands = allCommands.filter { command ->
+        !command::class.annotations.any { it.annotationClass.simpleName == "ServerOnly" }
+    }
 
     fun getCommandList(): List<Command> {
         return allCommands
     }
 
-    fun getCommandMap(): Map<String, Command> {
+    fun getCommandMap(): Map<String, Command>{
         return allCommands.associateBy { it.name() }
     }
 
-    fun addToHistory(command: Command) {
-        commandHistory.add(command)
+    fun getUserCommandList(): List<Command> {
+        return userCommands
     }
 
-    fun getLastCommands(amount: Int): List<Command> {
-        return commandHistory.takeLast(amount)
+    fun getUserCommandMap(): Map<String, Command> {
+        return userCommands.associateBy { it.name() }
     }
 
 }

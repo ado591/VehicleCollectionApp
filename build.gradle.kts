@@ -21,6 +21,7 @@ dependencies {
     testImplementation("io.insert-koin:koin-test:$koin_version")
     testImplementation("io.insert-koin:koin-test-junit5:$koin_version")
     //JACKSON XML
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.+")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.0")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     //reflections

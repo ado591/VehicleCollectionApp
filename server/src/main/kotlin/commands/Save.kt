@@ -1,14 +1,17 @@
 package commands
 
-import exceptions.InvalidArgumentException
-import model.response.ErrorResponse
+import commands.extra.ServerOnly
 import model.response.Response
-import model.response.SuccessResponse
-import utility.XmlWriter
+import model.response.ResponseType
+import utils.xml.XmlWriter
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.ResourceBundle
 
+
+
+const val DEFAULT_SAVE_PATH = "files/blank.xml"
+@ServerOnly
 class Save : Command(
     "save",
     ResourceBundle.getBundle("message/info").getString("save_description")
@@ -20,18 +23,22 @@ class Save : Command(
      * @param argument a string argument representing the file path to save the collection
      * @return a Response object with a success message or an error message based on the operation result
      */
-    override fun execute(argument: String?): Response { // todo: недоступна для пользователя
+    override fun execute(argument: String?): Response {
         val filePath: String =
-            argument ?: throw InvalidArgumentException("Не передан путь к файлу")
+            argument ?: DEFAULT_SAVE_PATH
         try {
             XmlWriter().write(collectionManager.getCollection(), filePath)
+            logger.info("Файл успешно сохранен")
         } catch (e: FileNotFoundException) {
-            return ErrorResponse("Файл не найден", isFatal = false)
+            logger.fatal("Файл не найден")
         } catch (e: IOException) {
-            return ErrorResponse("Возникла ошибка при записи коллекции", isFatal = false)
+            logger.error("Возникла ошибка при записи коллекции")
         } catch (e: IllegalArgumentException) {
-            return ErrorResponse("Неверно указан путь к файлу", isFatal = false)
+            logger.fatal("Неверно указан путь к файлу")
         }
-        return SuccessResponse("Файл успешно сохранен")
+        return Response("По независящим от вас обстоятельствам сервер завершил работу").apply {
+            responseType = ResponseType.EXIT
+            statusCode = 0
+        }
     }
 }

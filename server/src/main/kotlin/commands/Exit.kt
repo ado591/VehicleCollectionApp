@@ -1,7 +1,7 @@
 package commands
 
-import model.response.ExitResponse
 import model.response.Response
+import model.response.ResponseType
 import java.util.ResourceBundle
 
 class Exit : Command(
@@ -16,8 +16,10 @@ class Exit : Command(
      * @return a Response object with a message indicating that the program has ended with exit code 0
      */
     override fun execute(argument: String?): Response {
-        return ExitResponse("Программа завершена с кодом 0", 0)
-        //console.print(Response("Программа завершена с кодом 0"))
-        //console.getScanner().closeWithCleanup(0)
+        logger.info("Closing client app")
+        return Response("Программа завершена с кодом 0").apply {
+            responseType = ResponseType.EXIT
+            statusCode = 0
+        }
     }
 }

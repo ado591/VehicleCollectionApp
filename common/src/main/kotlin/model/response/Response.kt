@@ -2,6 +2,13 @@ package model.response
 
 import java.io.Serializable
 
-open class Response(private val message: String) : Serializable { //todo: через enum или сделать наследников?
-    fun message(): String = message
+
+data class Response(
+    var message: String,
+    var responseType: ResponseType = ResponseType.BASIC,
+    var statusCode: Int = 0,
+    var index: Int = 0
+) : Serializable {
+    constructor() :
+            this(message = "")
 }

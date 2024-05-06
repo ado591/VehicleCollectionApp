@@ -6,35 +6,63 @@ import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.channels.DatagramChannel
 
-const val DEFAULT_IP = "localhost"
+
+const val DEFAULT_HOST = "localhost"
 const val DEFAULT_SERVER_PORT = 8083
+const val INTERVAL = 1000L
 
 class UDPClient(ip: String, port: Int) : KoinComponent {
-    constructor() : this(DEFAULT_IP, DEFAULT_SERVER_PORT)
+    constructor() : this(DEFAULT_HOST, DEFAULT_SERVER_PORT)
 
     private val serverAddress: InetSocketAddress = InetSocketAddress(ip, port)
-    private val dc: DatagramChannel =
-        DatagramChannel.open().bind(null) //todo: open выбрасывает IOException
-            .connect(serverAddress) // todo: как нормально привязать к локальному адресу через bind? без Null
+    private var dc: DatagramChannel =
+        DatagramChannel.open().bind(null)
+            .connect(serverAddress)
 
     init {
         dc.configureBlocking(false)
-        // todo: добавить логгирование при успешном подключении
+    }
+
+    fun disconnectFromServer() {
+        dc.disconnect()
     }
 
     fun sendData(data: ByteArray) {
-        val buf: ByteBuffer = ByteBuffer.wrap(data) //todo: indexOutOfBoundException????
+        val buf: ByteBuffer = ByteBuffer.wrap(data)
         try {
             dc.send(buf, serverAddress)
-            // todo: логгирование при успешной отправке
         } catch (e: IOException) {
-            //todo: добавить логгирование при ошибке + мб какую-то обработку??
+            println("Произошла проблема при отправке данных. Попробуйте еще раз")
+            Thread.sleep(INTERVAL * 10)
         }
     }
 
+
     fun receiveData(): ByteArray {
-        val buf: ByteBuffer = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE) //todo: взяла из внутренностей kotlin
-        dc.receive(buf) // todo: проверка на null
-        return buf.array()
+        val buf: ByteBuffer = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE)
+        do {
+            run outer@{
+                dc.receive(buf)?.run {
+                    return buf.array()
+                } ?: run {
+                    Thread.sleep(INTERVAL)
+                    return@outer
+                }
+            }
+        } while (true)
     }
+
+    private fun connect() {
+        dc =
+            DatagramChannel.open().bind(null)
+                .connect(serverAddress)
+        dc.configureBlocking(false)
+    }
+
+    fun reconnect() {
+        dc.disconnect()
+        dc.close()
+        connect()
+    }
+
 }

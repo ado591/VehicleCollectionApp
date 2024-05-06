@@ -3,8 +3,7 @@ package commands
 import data.VehicleType
 import exceptions.InvalidArgumentException
 import model.response.Response
-import model.response.SuccessResponse
-import model.response.WarningResponse
+import model.response.ResponseType
 import java.util.ResourceBundle
 import kotlin.IllegalArgumentException
 
@@ -18,6 +17,7 @@ class RemoveByType : Command(
             try {
                 VehicleType.valueOf(it.uppercase())
             } catch (e: IllegalArgumentException) {
+                logger.error("Could not find $argument enum")
                 throw InvalidArgumentException("Такого типа не существует")
             }
         } ?: throw InvalidArgumentException("Не передан тип для удаления")
@@ -25,9 +25,11 @@ class RemoveByType : Command(
         collectionManager.getCollection().removeIf { it.type == removingType }
         collectionManager.rearrange()
         return if (sizeBeforeExecute == collectionManager.getSize()) {
-            WarningResponse("Нет элементов, удовлетворяющих условиям поиска")
+            logger.warn("No item with type $removingType was found in the collection")
+            Response("Нет элементов, удовлетворяющих условиям поиска").apply { responseType = ResponseType.WARNING }
         } else {
-            SuccessResponse("Элементы типа $removingType удалены")
+            logger.info("All items with type $removingType were removed")
+            Response("Элементы типа $removingType удалены").apply { responseType = ResponseType.SUCCESS }
         }
     }
 }

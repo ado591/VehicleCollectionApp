@@ -4,6 +4,7 @@ import data.Coordinates
 import data.FuelType
 import data.Vehicle
 import data.VehicleType
+import model.response.Response
 import kotlin.random.Random
 
 interface Autogeneratable {
@@ -37,4 +38,10 @@ interface Autogeneratable {
             fuelType = fuelType
         )
     }
+
+    /**
+     * executing command with given object
+     * @param vehicle object made via client app
+     */
+    fun executeWithObject(vehicle: Vehicle, index: Int): Response
 }

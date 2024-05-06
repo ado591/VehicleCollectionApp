@@ -1,56 +1,87 @@
-import data.Vehicle
-import model.response.ErrorResponse
-import model.response.ExitResponse
+import model.request.Request
+import model.request.RequestType
 import model.response.Response
-import model.response.UserInputResponse
-import org.koin.core.component.inject
+import model.response.ResponseType
 import network.UDPClient
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import utils.ExecuteScript
+import utils.History
 import utils.ItemBuilder
+import utils.ObjectMapperWrapper
+import java.io.IOException
 import java.util.Scanner
 import kotlin.system.exitProcess
 
-fun Scanner.closeWithCleanup(status: Int): Nothing { // todo: надо еще соединения все позакрывать
-    this.close()
-    exitProcess(status)
-}
 
-class Client {
+class Client : KoinComponent {
     private val scanner: Scanner = Scanner(System.`in`)
     private val client: UDPClient by inject()
+    private var serverResponseRequired: Boolean = false
     fun interactiveMode(): Nothing {
         do {
             run {
-                val inputLine = scanner.nextLine().split(" ", limit = 2)
-                val commandArguments = inputLine
-                    .takeIf { it.size > 1 }
-                    ?.drop(1)
-                    ?.joinToString(" ").takeUnless { it.isNullOrBlank() }
-
-                inputLine.getOrNull(0)?.let { client.sendData("$it $commandArguments") } ?: return@run
-
-                when (val serverResponse: Response = client.receiveData()) { // todo: ответ с сервера
-                    is UserInputResponse -> {
-                        val element: Vehicle = ItemBuilder.consoleAdd()
-                        client.sendData(element) //  todo: как сделать так, чтобы сервер понял, что ждет именно объект Vehicle?
+                if (!serverResponseRequired) {
+                    val inputLine: String = scanner.nextLine() ?: return@run
+                    if (inputLine.split("\\s".toRegex())[0] == "execute_script") {
+                        val commandArguments = inputLine.split(" ", limit = 2)
+                            .takeIf { it.size > 1 }
+                            ?.drop(1)
+                            ?.joinToString(" ").takeUnless { it.isNullOrBlank() }
+                        ExecuteScript(this).execute(commandArguments)
+                        return@run
                     }
-
-                    is ExitResponse -> {
-                        scanner.closeWithCleanup(serverResponse.getExitCode())
+                    if (inputLine.split("\\s".toRegex())[0] == "history") {
+                        val commandArguments = inputLine.split(" ", limit = 2)
+                            .takeIf { it.size > 1 }
+                            ?.drop(1)
+                            ?.joinToString(" ").takeUnless { it.isNullOrBlank() }
+                        println(History.execute(commandArguments))
+                        return@run
                     }
-
-                    is ErrorResponse -> {
-                        if (serverResponse.isFatal()) {
-                            scanner.closeWithCleanup(1)
-                        }
-                    }
-
-                    else -> {
-                        println(serverResponse.message())
-                    }
+                    client.sendData(ObjectMapperWrapper.clientMapper.writeValueAsBytes(Request(inputLine)))
+                    History.addToHistory(inputLine)
                 }
+                handleResponse()
             }
 
         } while (true)
+    }
 
+    private fun userInputMode() {
+        val newElement = ItemBuilder.consoleAdd()
+        client.sendData(ObjectMapperWrapper.clientMapper.writeValueAsBytes(Request().apply {
+            vehicle = newElement
+            requestType = RequestType.DATA
+        }))
+    }
+
+    fun handleResponse() {
+        try {
+            val serverResponse =
+                ObjectMapperWrapper.clientMapper.readValue(client.receiveData(), Response::class.java)
+            when (serverResponse.responseType) {
+                ResponseType.EXIT -> {
+                    println(serverResponse.message)
+                    client.disconnectFromServer()
+                    scanner.close()
+                    exitProcess(serverResponse.statusCode)
+                }
+
+                ResponseType.USER_INPUT -> {
+                    userInputMode()
+                    serverResponseRequired = true
+                }
+
+                else -> {
+                    println(serverResponse.message)
+                    serverResponseRequired = false
+                }
+            }
+        } catch (e: IOException) {
+            println("Сервер временно недоступен. Вы сможете повторно отправить запрос через 10 секунд")
+            Thread.sleep(10000)
+            client.reconnect()
+        }
     }
 }

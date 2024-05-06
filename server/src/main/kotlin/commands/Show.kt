@@ -1,8 +1,7 @@
 package commands
 
 import model.response.Response
-import model.response.SuccessResponse
-import model.response.WarningResponse
+import model.response.ResponseType
 import java.util.ResourceBundle
 
 
@@ -18,13 +17,15 @@ class Show : Command(
      */
     override fun execute(argument: String?): Response {
         if (collectionManager.isEmpty()) {
-            return WarningResponse("Коллекция пуста")
+            logger.warn("Trying to process command ${name()} with an empty collection")
+            return Response("Коллекция пуста").apply { responseType = ResponseType.WARNING }
         }
         val message = StringBuilder()
             .appendLine("Элементы коллекции в строковом представлении:")
-        for (elem in collectionManager.getCollection()) {
-            message.appendLine(elem.toString())
-        }
-        return SuccessResponse(message.toString())
+        collectionManager.getCollection()
+            .sorted()
+            .forEach { elem -> message.appendLine(elem.toString()) }
+        logger.info("A list with the whole collection was created")
+        return Response(message.toString()).apply { responseType = ResponseType.SUCCESS }
     }
 }

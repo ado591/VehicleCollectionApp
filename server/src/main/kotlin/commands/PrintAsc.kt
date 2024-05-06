@@ -1,10 +1,7 @@
 package commands
 
-import data.Vehicle
-import exceptions.InvalidArgumentException
 import model.response.Response
-import model.response.SuccessResponse
-import model.response.WarningResponse
+import model.response.ResponseType
 import java.util.ResourceBundle
 
 class PrintAsc : Command(
@@ -20,28 +17,12 @@ class PrintAsc : Command(
      */
     override fun execute(argument: String?): Response {
         if (collectionManager.isEmpty()) {
-            return WarningResponse("Коллекция пуста")
+            logger.warn("Collection is empty")
+            return Response("Коллекция пуста").apply { responseType = ResponseType.WARNING }
         }
-        val message = StringBuilder()
-        val sortedCollection =
-            argument?.let { customSorting(it.split(" ")) } ?: collectionManager.getCollection().sorted()
-        for (element in sortedCollection) {
-            message.appendLine(element.toString())
-        }
-        return SuccessResponse(message.toString())
-    }
-
-    private fun customSorting(fields: List<String>): List<Vehicle> {
-        val fieldsForSorting = fields.map { field ->
-            try {
-                Vehicle::class.java.getDeclaredField(field)
-                field
-            } catch (e: NoSuchFieldException) {
-                throw InvalidArgumentException("Неизвестное поле: $field")
-            }
-        } //в итоге здесь только верные поля
-        // todo: not finished yet
-        // todo: не работает с координатами
-        return collectionManager.getCollection().sorted()
+        val message = collectionManager.getCollection()
+            .sorted()
+            .joinToString("\n") { it.toString() }
+        return Response(message).apply { responseType = ResponseType.SUCCESS }
     }
 }

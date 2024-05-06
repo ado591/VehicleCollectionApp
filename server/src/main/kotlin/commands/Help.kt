@@ -1,9 +1,9 @@
 package commands
 
 import model.response.Response
-import model.response.SuccessResponse
-import java.util.ResourceBundle
 
+import model.response.ResponseType
+import java.util.ResourceBundle
 class Help : Command(
     "help",
     ResourceBundle.getBundle("message/info").getString("help_description")
@@ -15,9 +15,9 @@ class Help : Command(
      */
     override fun execute(argument: String?): Response {
         val result: StringBuilder = StringBuilder()
-        for (command in commandManager.getCommandList()) {
+        for (command in commandManager.getUserCommandList()) {
             result.appendLine("${command.name()}: ${command.description()}")
         }
-        return SuccessResponse(result.toString())
+        return Response(result.toString()).apply { responseType = ResponseType.SUCCESS }
     }
 }

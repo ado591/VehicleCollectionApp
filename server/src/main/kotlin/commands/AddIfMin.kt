@@ -4,8 +4,7 @@ import commands.extra.Autogeneratable
 import data.Vehicle
 import exceptions.InvalidArgumentException
 import model.response.Response
-import model.response.SuccessResponse
-import model.response.WarningResponse
+import model.response.ResponseType
 import java.util.ResourceBundle
 
 class AddIfMin : Command(
@@ -14,30 +13,57 @@ class AddIfMin : Command(
 ), Autogeneratable {
 
     /**
-     * Adds element to collection using ItemBuilder class and .consoleAdd() method
+     * Adds element to collection using auto generation or user input for client
      * iff new element will be the smallest in the collection
-     * @param argument  null for console input, --auto for calling built-in method
-     * @return a Response object with a success message after adding an element or error message if element is not a min
+     * @param argument  null for user input, --auto for calling built-in method
+     * @return a Response object with result of execution
      */
     override fun execute(argument: String?): Response {
         val newElement = argument?.let {
             if (!checkFlag(it))
                 throw InvalidArgumentException("Передан неверный флаг")
             autoAdd()
-        } ?: builder.consoleAdd()
+        } ?: run {
+            return Response().apply {
+                responseType = ResponseType.USER_INPUT
+                index = collectionManager.getSize()
+            }
+        }
         val customResponse: StringBuilder = StringBuilder().appendLine(newElement.toString())
-        //console.print(Response(newElement.toString()))
         if (collectionManager.isEmpty()) {
-            return WarningResponse("Коллекция пуста")
+            logger.warn("Collection is empty")
+            return Response("Коллекция пуста").apply { responseType = ResponseType.WARNING }
         }
         return if (newElement < collectionManager.getMin()) {
             collectionManager.add(newElement)
-            customResponse.appendLine("Элемент успешно добавлен в коллекцию") //todo: а можно ли как-то два соо отправить?
-            SuccessResponse(customResponse.toString())
+            logger.info("Element was added to collection")
+            customResponse.appendLine("Элемент успешно добавлен в коллекцию")
+            Response(customResponse.toString()).apply { responseType = ResponseType.SUCCESS }
         } else {
             Vehicle.setCurrentId(collectionManager.getSize().toLong())
+            logger.warn("Element is not a minimum for collection")
             customResponse.appendLine("Этот элемент не является минимумом для коллекции")
-            WarningResponse(customResponse.toString())
+            Response(customResponse.toString()).apply { responseType = ResponseType.WARNING }
+        }
+    }
+
+    override fun executeWithObject(vehicle: Vehicle, index: Int): Response {
+        vehicle.id = index.toLong()
+        val customResponse: StringBuilder = StringBuilder().appendLine(vehicle.toString())
+        if (collectionManager.isEmpty()) {
+            logger.warn("Collection is empty")
+            return Response("Коллекция пуста").apply { responseType = ResponseType.WARNING }
+        }
+        return if (vehicle < collectionManager.getMin()) {
+            collectionManager.add(vehicle)
+            logger.info("Element was added to collection")
+            customResponse.appendLine("Элемент успешно добавлен в коллекцию")
+            Response(customResponse.toString()).apply { responseType = ResponseType.SUCCESS }
+        } else {
+            Vehicle.setCurrentId(collectionManager.getSize().toLong())
+            logger.warn("Element is not a minimum for collection")
+            customResponse.appendLine("Этот элемент не является минимумом для коллекции")
+            Response(customResponse.toString()).apply { responseType = ResponseType.WARNING }
         }
     }
 }

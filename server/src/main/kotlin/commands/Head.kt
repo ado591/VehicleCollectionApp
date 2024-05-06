@@ -1,8 +1,7 @@
 package commands
 
 import model.response.Response
-import model.response.SuccessResponse
-import model.response.WarningResponse
+import model.response.ResponseType
 import java.util.ResourceBundle
 
 class Head : Command(
@@ -17,9 +16,13 @@ class Head : Command(
      */
     override fun execute(argument: String?): Response {
         return if (collectionManager.isEmpty()) {
-            WarningResponse("Коллекция пуста")
+            logger.warn("Collection is empty")
+            Response("Коллекция пуста").apply { responseType = ResponseType.WARNING }
         } else {
-            SuccessResponse("Первый элемент коллекции: ${collectionManager.head()}")
+            logger.info("Printing first element of the collection")
+            Response("Первый элемент коллекции: ${collectionManager.head()}").apply {
+                responseType = ResponseType.SUCCESS
+            }
         }
     }
 }

@@ -1,8 +1,7 @@
 package commands
 
 import model.response.Response
-import model.response.SuccessResponse
-import model.response.WarningResponse
+import model.response.ResponseType
 import java.util.ResourceBundle
 
 class RemoveFirst : Command(
@@ -17,11 +16,13 @@ class RemoveFirst : Command(
      */
     override fun execute(argument: String?): Response {
         return if (collectionManager.isEmpty()) {
-            WarningResponse("Коллекция пуста")
+            logger.warn("Trying to process command with an empty collection")
+            Response("Коллекция пуста").apply { responseType = ResponseType.WARNING }
         } else {
             collectionManager.removeById(0)
             collectionManager.rearrange()
-            SuccessResponse("Элемент успешно удален")
+            logger.info("First element was removed from the collection")
+            Response("Элемент успешно удален").apply { responseType = ResponseType.SUCCESS }
         }
     }
 }

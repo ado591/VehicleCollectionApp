@@ -33,12 +33,9 @@ data class Vehicle(
     }
 
     override fun compareTo(other: Vehicle): Int {
-        return compareValuesBy(this, other,
-            { it.enginePower },
-            { it.fuelConsumption },
-            { it.creationDate },
-            { it.name }
-        )
+        return compareValuesBy(
+            this, other
+        ) { it.name }
     }
 
     override fun isValid(): Boolean {

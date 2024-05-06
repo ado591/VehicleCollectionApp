@@ -1,7 +1,13 @@
 package model.request
 
-class Request(private val message: String) {
-    fun message(): String {
-        return message
-    }
+import data.Vehicle
+import java.io.Serializable
+
+
+data class Request(
+    var message: String,
+    var requestType: RequestType = RequestType.REGULAR,
+    var vehicle: Vehicle? = null
+) : Serializable {
+    constructor() : this(message = "")
 }

@@ -2,7 +2,7 @@ package commands
 
 import data.Vehicle
 import model.response.Response
-import model.response.SuccessResponse
+import model.response.ResponseType
 import java.util.ResourceBundle
 
 class Clear : Command(
@@ -18,6 +18,7 @@ class Clear : Command(
     override fun execute(argument: String?): Response {
         collectionManager.clear()
         Vehicle.setCurrentId(0)
-        return SuccessResponse("Коллекция успешно очищена")
+        logger.info("Collection was cleared")
+        return Response("Коллекция успешно очищена").apply { responseType = ResponseType.SUCCESS }
     }
 }

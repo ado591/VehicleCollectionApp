@@ -1,4 +1,4 @@
-package utility
+package utils.xml
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule

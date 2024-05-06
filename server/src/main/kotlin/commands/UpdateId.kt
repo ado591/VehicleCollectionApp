@@ -4,8 +4,7 @@ import commands.extra.Autogeneratable
 import data.Vehicle
 import exceptions.InvalidArgumentException
 import model.response.Response
-import model.response.SuccessResponse
-import model.response.WarningResponse
+import model.response.ResponseType
 import java.util.ResourceBundle
 
 class UpdateId : Command(
@@ -25,7 +24,7 @@ class UpdateId : Command(
         }) - 1
         val flag: String? = args.getOrNull(1)
         if (collectionManager.isEmpty()) {
-            return WarningResponse("Коллекция пуста")
+            return Response("Коллекция пуста").apply { responseType = ResponseType.WARNING }
         } else if (!(collectionManager.inBounds(id))) {
             throw InvalidArgumentException("Указан некорректный индекс")
         }
@@ -33,9 +32,25 @@ class UpdateId : Command(
             if (!checkFlag(it))
                 throw InvalidArgumentException("Передан неверный флаг")
             autoAdd()
-        } ?: builder.consoleAdd()
+        } ?: run {
+            return Response().apply {
+                responseType = ResponseType.USER_INPUT
+                index = id
+            }
+        }
         newElement.id = id.toLong() + 1
         collectionManager.update(id, newElement)
-        return SuccessResponse("Элемент успешно обновлен")
+        return Response("Элемент успешно обновлен").apply { responseType = ResponseType.SUCCESS }
+    }
+
+    override fun executeWithObject(vehicle: Vehicle, index: Int): Response {
+        if (collectionManager.isEmpty()) {
+            return Response("Коллекция пуста").apply { responseType = ResponseType.WARNING }
+        } else if (!(collectionManager.inBounds(index))) {
+            throw InvalidArgumentException("Указан некорректный индекс")
+        }
+        vehicle.id = index.toLong() + 1
+        collectionManager.update(index, vehicle)
+        return Response("Элемент успешно обновлен").apply { responseType = ResponseType.SUCCESS }
     }
 }

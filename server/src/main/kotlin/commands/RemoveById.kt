@@ -1,9 +1,8 @@
 package commands
 
 import exceptions.InvalidArgumentException
-import model.response.ErrorResponse
 import model.response.Response
-import model.response.SuccessResponse
+import model.response.ResponseType
 import java.util.ResourceBundle
 
 class RemoveById : Command(
@@ -25,9 +24,13 @@ class RemoveById : Command(
         return if (collectionManager.inBounds(id)) {
             collectionManager.removeById(id)
             collectionManager.rearrange(id)
-            SuccessResponse("Элемент успешно удален")
+            logger.info("Element was removed from collection")
+            Response("Элемент успешно удален").apply { responseType = ResponseType.SUCCESS }
         } else {
-            ErrorResponse("Указан некорректный индекс", isFatal = false)
+            logger.error("Invalid index was provided")
+            Response("Указан некорректный индекс").apply {
+                responseType = ResponseType.ERROR
+            }
         }
     }
 }

@@ -43,3 +43,7 @@ bin/
 ### Mac OS ###
 .DS_Store
 
+### logs ###
+.logs/
+
+/logs/
