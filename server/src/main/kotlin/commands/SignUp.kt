@@ -1,10 +1,10 @@
 package commands
 
-import exceptions.UserAlreadyExistsException
+import exceptions.users.UserAlreadyExistsException
 import model.User
 import model.response.Response
 
-class LogUp : Command("log up", "регистрирует пользователя в инновационной программе") {
+class SignUp : Command("sign up", "регистрирует пользователя в инновационной программе") {
     override fun execute(argument: String?, user: User): Response {
         return try {
             dbManager.registerUser(user)

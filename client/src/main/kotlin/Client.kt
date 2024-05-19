@@ -1,3 +1,4 @@
+import model.User
 import model.request.Request
 import model.request.RequestType
 import model.response.Response
@@ -18,6 +19,7 @@ class Client : KoinComponent {
     private val scanner: Scanner = Scanner(System.`in`)
     private val client: UDPClient by inject()
     private var serverResponseRequired: Boolean = false
+    private var currentUser: User? = null
     fun interactiveMode(): Nothing {
         do {
             run {
@@ -39,7 +41,14 @@ class Client : KoinComponent {
                         println(History.execute(commandArguments))
                         return@run
                     }
-                    client.sendData(ObjectMapperWrapper.clientMapper.writeValueAsBytes(Request(inputLine)))
+                    client.sendData(
+                        ObjectMapperWrapper.clientMapper.writeValueAsBytes(
+                            Request(
+                                message = inputLine,
+                                user = currentUser
+                            )
+                        )
+                    )
                     History.addToHistory(inputLine)
                 }
                 handleResponse()
@@ -53,6 +62,7 @@ class Client : KoinComponent {
         client.sendData(ObjectMapperWrapper.clientMapper.writeValueAsBytes(Request().apply {
             vehicle = newElement
             requestType = RequestType.DATA
+            user = currentUser
         }))
     }
 
@@ -83,5 +93,12 @@ class Client : KoinComponent {
             Thread.sleep(10000)
             client.reconnect()
         }
+    }
+
+    /**
+     * Возвращает текущего пользователя
+     */
+    fun getCurrentUser(): User? {
+        return currentUser
     }
 }

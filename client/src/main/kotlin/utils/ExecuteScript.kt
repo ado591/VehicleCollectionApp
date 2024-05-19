@@ -55,7 +55,9 @@ class ExecuteScript(private val clientApp: Client) : KoinComponent {
                 execute(scriptName)
             } else {
                 val clientRequest = Request(line).apply { requestType = RequestType.SCRIPT }
-                client.sendData(ObjectMapperWrapper.clientMapper.writeValueAsBytes(clientRequest))
+                client.sendData(ObjectMapperWrapper.clientMapper.writeValueAsBytes(clientRequest.apply {
+                    user = clientApp.getCurrentUser()
+                }))
                 clientApp.handleResponse()
             }
         }

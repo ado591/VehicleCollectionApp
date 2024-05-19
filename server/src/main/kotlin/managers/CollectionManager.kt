@@ -1,16 +1,24 @@
 package managers
 
 import data.Vehicle
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.kotlin.logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.ArrayDeque
 
 class CollectionManager(filepath: String) : KoinComponent {
     private val dbManager: DatabaseManager by inject()
-    private var collection: ArrayDeque<Vehicle> = dbManager.loadCollectionFromDB()
+    private var loadedCollection: ArrayDeque<Vehicle> = dbManager.loadCollectionFromDB()
+    private var collection = Collections.synchronizedList(loadedCollection)
     private val initTime: ZonedDateTime = ZonedDateTime.now()
-
+    private val logger = LogManager.getLogger("logger")
+    init {
+        logger.info("Инициализирован менеджер коллекций")
+    }
     /**
      * adds element to the collection
      */
@@ -56,7 +64,7 @@ class CollectionManager(filepath: String) : KoinComponent {
      * @return current collection
      */
 
-    fun getCollection(): ArrayDeque<Vehicle> {
+    fun getCollection(): MutableList<Vehicle> {
         return collection
     }
 

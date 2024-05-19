@@ -4,18 +4,16 @@ import data.Coordinates
 import data.FuelType
 import data.Vehicle
 import data.VehicleType
-import database.DbConnection
-import exceptions.InvalidPasswordException
-import exceptions.UserAlreadyExistsException
-import exceptions.UserNotFoundException
+import exceptions.users.InvalidPasswordException
+import exceptions.users.UserAlreadyExistsException
+import exceptions.users.UserNotFoundException
 import model.User
 import org.apache.logging.log4j.LogManager
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import utils.PassHash
-import java.sql.PreparedStatement
-import java.sql.ResultSet
-import java.sql.SQLException
+import java.io.File
+import java.io.FileNotFoundException
+import java.sql.*
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
@@ -23,15 +21,59 @@ import kotlin.collections.ArrayDeque
 import kotlin.system.exitProcess
 
 
+const val DEFAULT_SQL_PATH = "server/src/main/kotlin/database/schema.sql"
 const val pepper = "2Hq@*!8fdAQl" //todo: сменить
 /**
  * Класс, выполняющий действия с базой данных
  */
-class DatabaseManager() : KoinComponent {
-    private val dbConnection: DbConnection by inject()
-    private val connection = dbConnection.getConnection()
+class DatabaseManager : KoinComponent {
+    private val databaseName = System.getenv("DB_NAME") // studs
+    private val username = System.getenv("HELIOS_LOGIN") // sXXXXXX
+    private val password = System.getenv("HELIOS_PASS") // пароль из ./pgpass
+    private val url = "jdbc:postgresql://127.0.0.1:5432/$databaseName"
+
+    private var connection: Connection
     private val logger = LogManager.getLogger("logger")
 
+    init {
+        connection = connectToDatabase()
+        initTables(DEFAULT_SQL_PATH)
+    }
+
+
+    private fun connectToDatabase(): Connection {
+        logger.info("$url, $username, $password")
+        val res = DriverManager.getConnection(url, username, password)
+        logger.info("Подключились")
+        return res
+    }
+
+
+    private fun initTables(pathToScript: String) {
+        try {
+            val script = File(pathToScript).readText()
+            /*for (sql in script.split(";")) {
+                logger.info(sql)
+                logger.info("Trying to execute $sql")
+                val statement = connection.createStatement()
+                statement.execute("$sql;")
+                //connection.commit()
+                logger.info("Executing statement was successful")
+            }*/
+            val statement = connection.createStatement()
+            statement.execute(script)
+        } catch (e: FileNotFoundException) {
+            logger.error("Could not find file")
+            connection.close()
+            exitProcess(1)
+        } catch (e: SQLException) {
+            logger.error("Error while creating database")
+            logger.error(e.message)
+            connection.close()
+            exitProcess(1)
+        }
+        logger.info("Database initialization was finished")
+    }
 
     /**
      * Загружает коллекцию из базы данных в память
@@ -43,7 +85,7 @@ class DatabaseManager() : KoinComponent {
             val joinStatement = connection.prepareStatement(
                 ResourceBundle
                     .getBundle("queries")
-                    .getString("add_user")
+                    .getString("all_elements")
             )
             val result = joinStatement.executeQuery()
             while (result.next()) {
@@ -54,7 +96,8 @@ class DatabaseManager() : KoinComponent {
             logger.info("Коллекция успешно загружена из базы данных")
         } catch (e: SQLException) {
             logger.fatal("При загрузке коллекции из базы данных произошла ошибка")
-            exitProcess(-1)
+            logger.fatal(e.message)
+            exitProcess(1)
         }
         return collection
     }
@@ -267,6 +310,7 @@ class DatabaseManager() : KoinComponent {
             ResourceBundle.getBundle("queries")
                 .getString("remove_element")
         )
+        preparedStatement.setLong(1, index)
         preparedStatement.executeUpdate()
         connection.close()
     }

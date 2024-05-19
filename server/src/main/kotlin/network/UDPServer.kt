@@ -7,6 +7,7 @@ import data.Vehicle
 import exceptions.InvalidArgumentException
 import exceptions.NoObjectPassedException
 import exceptions.UnknownCommandException
+import exceptions.users.UserNotFoundException
 import model.request.Request
 import model.response.Response
 import model.response.ResponseType
@@ -79,6 +80,7 @@ class UDPServer(host: String, port: Int) : KoinComponent {
 
 
     fun runServer(): Nothing {
+        logger.info("Starting server...")
         do {
             run {
                 val dataFromClient: Pair<ByteArray, SocketAddress>
@@ -100,11 +102,13 @@ class UDPServer(host: String, port: Int) : KoinComponent {
                     sendData(objectMapper.writeValueAsBytes(error), clientAddress)
                     return@run
                 }
-                val serverResponse: Response = clientRequest?.run {
+                val serverResponse: Response = handleAuthorizedRequest(clientRequest, clientAddress)
+                /*val serverResponse: Response = clientRequest?.run {
                     handleAuthorizedRequest(clientRequest, clientAddress)
-                } ?: Response("Вы не авторизированы в системе! Введите данные для авторизации").apply {
-                    responseType = ResponseType.WARNING
                 }
+                    ?: Response("Вы не вошли в систему! Используйте команду sign up для регистрации или log in для входа").apply {
+                        responseType = ResponseType.WARNING
+                    }*/
                 sendData(objectMapper.writeValueAsBytes(serverResponse), clientAddress)
             }
         } while (true)
@@ -141,6 +145,11 @@ class UDPServer(host: String, port: Int) : KoinComponent {
             serverResponse = Response("Для выполнения команды требуется передать объект").apply {
                 responseType = ResponseType.ERROR
             }
+        } catch (e: UserNotFoundException) {
+            serverResponse =
+                Response("Вы не вошли в систему! Используйте команду sign up для регистрации или log in для входа").apply {
+                    responseType = ResponseType.WARNING
+                }
         }
         return serverResponse
     }

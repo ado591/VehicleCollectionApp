@@ -3,7 +3,7 @@ package utils
 import commands.Command
 import commands.extra.Autogeneratable
 import data.Vehicle
-import exceptions.UserNotFoundException
+import exceptions.users.UserNotFoundException
 import model.User
 import model.request.Request
 import model.request.RequestType
@@ -29,8 +29,8 @@ class RequestHandler : KoinComponent {
         }
     }
 
-    fun handleWithObject(element: Vehicle, commandToProcess: Autogeneratable, index: Int, user: User): Response {
-        return commandToProcess.executeWithObject(element, index, user)
+    fun handleWithObject(element: Vehicle, commandToProcess: Autogeneratable, index: Int, user: User?): Response {
+        return commandToProcess.executeWithObject(element, index, user ?: throw UserNotFoundException())
     }
 
 

@@ -1,5 +1,6 @@
 import di.serverModule
 import managers.CollectionManager
+import managers.DatabaseManager
 import network.UDPServer
 import org.apache.logging.log4j.LogManager
 import org.koin.core.component.KoinComponent
@@ -13,6 +14,9 @@ fun main() {
         modules(serverModule)
     }
     //todo: Class.forName("org.postgresql.Driver");
+    val dbManager: DatabaseManager = object : KoinComponent {
+        val manager: DatabaseManager by inject()
+    }.manager
     val collectionManager = object : KoinComponent {
         val manager: CollectionManager by inject()
     }.manager

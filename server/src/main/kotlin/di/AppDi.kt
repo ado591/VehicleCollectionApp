@@ -2,11 +2,15 @@ package di
 
 import managers.CollectionManager
 import managers.CommandManager
+import managers.DatabaseManager
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import utils.CommandParser
 
 val serverModule = module {
+    single(createdAtStart = true) {
+        DatabaseManager()
+    }
     single(createdAtStart = true) {
         CommandManager()
     }

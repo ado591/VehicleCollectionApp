@@ -1,12 +1,12 @@
 package commands
 
-import exceptions.InvalidPasswordException
-import exceptions.UserNotFoundException
+import exceptions.users.InvalidPasswordException
+import exceptions.users.UserNotFoundException
 import model.User
 import model.response.Response
 
 
-class LogIn : Command("login", "войти в систему") {
+class LogIn : Command("log in", "войти в систему") {
     override fun execute(argument: String?, user: User): Response {
         argument ?: return Response("У этой команды нет аргументов") //todo: а надо ли оно тут
         return try {
