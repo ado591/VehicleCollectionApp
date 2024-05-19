@@ -2,7 +2,6 @@ package network
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import commands.Command
 import commands.extra.Autogeneratable
 import data.Vehicle
 import exceptions.InvalidArgumentException
@@ -101,35 +100,48 @@ class UDPServer(host: String, port: Int) : KoinComponent {
                     sendData(objectMapper.writeValueAsBytes(error), clientAddress)
                     return@run
                 }
-                var serverResponse: Response
-                val commandToProcess: Command
-                try {
-                    val result = requestHandler.handle(clientRequest)
-                    commandToProcess = result.first
-                    serverResponse = result.second
-                    if (serverResponse.responseType == ResponseType.USER_INPUT && commandToProcess is Autogeneratable) {
-                        val element: Vehicle = getObjectFromUser(clientAddress, serverResponse)
-                        serverResponse =
-                            requestHandler.handleWithObject(element, commandToProcess, serverResponse.index)
-                    }
-                } catch (e: UnknownCommandException) {
-                    logger.error("Could not find command")
-                    serverResponse = Response("Неизвестная команда").apply {
-                        responseType = ResponseType.ERROR
-                    }
-                } catch (e: InvalidArgumentException) {
-                    logger.error("Invalid arguments for command")
-                    serverResponse = Response(e.message ?: "Переданы неверные аргументы").apply {
-                        responseType = ResponseType.ERROR
-                    }
-                } catch (e: NoObjectPassedException) {
-                    logger.error("No valid object for command")
-                    serverResponse = Response("Для выполнения команды требуется передать объект").apply {
-                        responseType = ResponseType.ERROR
-                    }
+                val serverResponse: Response = clientRequest?.run {
+                    handleAuthorizedRequest(clientRequest, clientAddress)
+                } ?: Response("Вы не авторизированы в системе! Введите данные для авторизации").apply {
+                    responseType = ResponseType.WARNING
                 }
                 sendData(objectMapper.writeValueAsBytes(serverResponse), clientAddress)
             }
         } while (true)
+    }
+
+    private fun handleAuthorizedRequest(clientRequest: Request, clientAddress: SocketAddress): Response {
+        var serverResponse: Response
+        try {
+            val result = requestHandler.handle(clientRequest)
+            val commandToProcess = result.first
+            serverResponse = result.second
+            if (serverResponse.responseType == ResponseType.USER_INPUT && commandToProcess is Autogeneratable) {
+                val element: Vehicle = getObjectFromUser(clientAddress, serverResponse)
+                serverResponse =
+                    requestHandler.handleWithObject(
+                        element,
+                        commandToProcess,
+                        serverResponse.index,
+                        clientRequest.user!! //todo: убрать
+                    )
+            }
+        } catch (e: UnknownCommandException) {
+            logger.error("Could not find command")
+            serverResponse = Response("Неизвестная команда").apply {
+                responseType = ResponseType.ERROR
+            }
+        } catch (e: InvalidArgumentException) {
+            logger.error("Invalid arguments for command")
+            serverResponse = Response(e.message ?: "Переданы неверные аргументы").apply {
+                responseType = ResponseType.ERROR
+            }
+        } catch (e: NoObjectPassedException) {
+            logger.error("No valid object for command")
+            serverResponse = Response("Для выполнения команды требуется передать объект").apply {
+                responseType = ResponseType.ERROR
+            }
+        }
+        return serverResponse
     }
 }

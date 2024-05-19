@@ -3,6 +3,7 @@ package commands
 import commands.extra.Autogeneratable
 import data.Vehicle
 import exceptions.InvalidArgumentException
+import model.User
 import model.response.Response
 import model.response.ResponseType
 import java.util.ResourceBundle
@@ -18,7 +19,7 @@ class AddIfMin : Command(
      * @param argument  null for user input, --auto for calling built-in method
      * @return a Response object with result of execution
      */
-    override fun execute(argument: String?): Response {
+    override fun execute(argument: String?, user: User): Response {
         val newElement = argument?.let {
             if (!checkFlag(it))
                 throw InvalidArgumentException("Передан неверный флаг")
@@ -35,6 +36,7 @@ class AddIfMin : Command(
             return Response("Коллекция пуста").apply { responseType = ResponseType.WARNING }
         }
         return if (newElement < collectionManager.getMin()) {
+            dbManager.addVehicle(newElement, user)
             collectionManager.add(newElement)
             logger.info("Element was added to collection")
             customResponse.appendLine("Элемент успешно добавлен в коллекцию")
@@ -47,7 +49,7 @@ class AddIfMin : Command(
         }
     }
 
-    override fun executeWithObject(vehicle: Vehicle, index: Int): Response {
+    override fun executeWithObject(vehicle: Vehicle, index: Int, user: User): Response {
         vehicle.id = index.toLong()
         val customResponse: StringBuilder = StringBuilder().appendLine(vehicle.toString())
         if (collectionManager.isEmpty()) {
@@ -55,6 +57,7 @@ class AddIfMin : Command(
             return Response("Коллекция пуста").apply { responseType = ResponseType.WARNING }
         }
         return if (vehicle < collectionManager.getMin()) {
+            dbManager.addVehicle(vehicle, user)
             collectionManager.add(vehicle)
             logger.info("Element was added to collection")
             customResponse.appendLine("Элемент успешно добавлен в коллекцию")

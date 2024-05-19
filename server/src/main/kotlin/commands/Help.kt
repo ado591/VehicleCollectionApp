@@ -1,5 +1,6 @@
 package commands
 
+import model.User
 import model.response.Response
 
 import model.response.ResponseType
@@ -13,7 +14,7 @@ class Help : Command(
      * @param argument a string argument (should be null)
      * @return a Response object with the list of available commands and their descriptions
      */
-    override fun execute(argument: String?): Response {
+    override fun execute(argument: String?, user: User): Response {
         val result: StringBuilder = StringBuilder()
         for (command in commandManager.getUserCommandList()) {
             result.appendLine("${command.name()}: ${command.description()}")

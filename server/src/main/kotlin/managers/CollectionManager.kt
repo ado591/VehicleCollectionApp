@@ -1,20 +1,15 @@
 package managers
 
 import data.Vehicle
-import org.apache.logging.log4j.LogManager
 import org.koin.core.component.KoinComponent
-import utils.xml.XmlReader
-import utils.xml.XmlWriter
-import java.io.FileNotFoundException
-import java.io.IOException
+import org.koin.core.component.inject
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-const val DEFAULT_SAVEFILE = "server/src/main/files/blank.xml"
 class CollectionManager(filepath: String) : KoinComponent {
-    private var collection: ArrayDeque<Vehicle> = XmlReader().parseDocument(filepath)
+    private val dbManager: DatabaseManager by inject()
+    private var collection: ArrayDeque<Vehicle> = dbManager.loadCollectionFromDB()
     private val initTime: ZonedDateTime = ZonedDateTime.now()
-    private val logger = LogManager.getLogger("logger")
 
     /**
      * adds element to the collection
@@ -115,19 +110,6 @@ class CollectionManager(filepath: String) : KoinComponent {
             .filter { vehicle -> vehicle.id > start }
             .forEach { it.id -= 1 }
         Vehicle.setCurrentId(collection.size.toLong())
-    }
-
-    fun save() {
-        try {
-            XmlWriter().write(collection, DEFAULT_SAVEFILE)
-            logger.info("Файл успешно сохранен")
-        } catch (e: FileNotFoundException) {
-            logger.fatal("Файл не найден")
-        } catch (e: IOException) {
-            logger.error("Возникла ошибка при записи коллекции")
-        } catch (e: IllegalArgumentException) {
-            logger.fatal("Неверно указан путь к файлу")
-        }
     }
 
 }

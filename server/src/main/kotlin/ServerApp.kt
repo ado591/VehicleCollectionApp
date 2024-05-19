@@ -12,11 +12,11 @@ fun main() {
     startKoin {
         modules(serverModule)
     }
+    //todo: Class.forName("org.postgresql.Driver");
     val collectionManager = object : KoinComponent {
         val manager: CollectionManager by inject()
     }.manager
     val logger = LogManager.getLogger("logger")
-    Runtime.getRuntime().addShutdownHook(Thread(collectionManager::save))
     try {
         val server = UDPServer()
         server.runServer()

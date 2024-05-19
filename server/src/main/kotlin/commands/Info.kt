@@ -1,5 +1,6 @@
 package commands
 
+import model.User
 import model.response.Response
 import model.response.ResponseType
 import java.util.ResourceBundle
@@ -14,7 +15,7 @@ class Info : Command(
      * @param argument a string argument (should be null)
      * @return a Response object with type, size and init time of current collection
      */
-    override fun execute(argument: String?): Response {
+    override fun execute(argument: String?, user: User): Response {
         logger.info("Creating info message about current collection")
         val message = StringBuilder()
         message.appendLine("Тип коллекции: ${collectionManager.getCollection()::class.simpleName}")
