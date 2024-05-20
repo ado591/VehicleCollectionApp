@@ -3,6 +3,7 @@ package commands
 import commands.extra.Autogeneratable
 import data.Vehicle
 import exceptions.InvalidArgumentException
+import exceptions.users.UserNotAuthorizedException
 import model.User
 import model.response.Response
 import model.response.ResponseType
@@ -17,7 +18,7 @@ class UpdateId : Command(
      * @param argument ID to update
      * @return a Response object with a success message or an error message based on the operation result
      */
-    override fun execute(argument: String?, user: User): Response {
+    override fun execute(argument: String?, user: User?): Response {
         val args: List<String> =
             argument?.split(" ") ?: throw InvalidArgumentException("Не передан аргумент для команды ${name()}")
         val id: Int = (args[0].let {
@@ -29,7 +30,7 @@ class UpdateId : Command(
         } else if (!(collectionManager.inBounds(id))) {
             throw InvalidArgumentException("Указан некорректный индекс")
         }
-        if (!dbManager.checkCreator(id.toLong() + 1, user)) {
+        if (!dbManager.checkCreator(id.toLong() + 1, user ?: throw UserNotAuthorizedException())) {
             return Response("У вас нет прав для модификации данного объекта").apply {
                 responseType = ResponseType.ERROR
             }

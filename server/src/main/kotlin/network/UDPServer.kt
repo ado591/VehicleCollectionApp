@@ -7,6 +7,7 @@ import data.Vehicle
 import exceptions.InvalidArgumentException
 import exceptions.NoObjectPassedException
 import exceptions.UnknownCommandException
+import exceptions.users.UserNotAuthorizedException
 import exceptions.users.UserNotFoundException
 import model.request.Request
 import model.response.Response
@@ -102,6 +103,7 @@ class UDPServer(host: String, port: Int) : KoinComponent {
                     sendData(objectMapper.writeValueAsBytes(error), clientAddress)
                     return@run
                 }
+                logger.info("Handle request from user with login ${clientRequest.user}")
                 val serverResponse: Response = handleAuthorizedRequest(clientRequest, clientAddress)
                 /*val serverResponse: Response = clientRequest?.run {
                     handleAuthorizedRequest(clientRequest, clientAddress)
@@ -127,7 +129,7 @@ class UDPServer(host: String, port: Int) : KoinComponent {
                         element,
                         commandToProcess,
                         serverResponse.index,
-                        clientRequest.user!! //todo: убрать
+                        clientRequest.user
                     )
             }
         } catch (e: UnknownCommandException) {
@@ -145,9 +147,9 @@ class UDPServer(host: String, port: Int) : KoinComponent {
             serverResponse = Response("Для выполнения команды требуется передать объект").apply {
                 responseType = ResponseType.ERROR
             }
-        } catch (e: UserNotFoundException) {
+        } catch (e: UserNotAuthorizedException) {
             serverResponse =
-                Response("Вы не вошли в систему! Используйте команду sign up для регистрации или log in для входа").apply {
+                Response("Вы не вошли в систему! Используйте команду sign_up для регистрации или log_in для входа").apply {
                     responseType = ResponseType.WARNING
                 }
         }

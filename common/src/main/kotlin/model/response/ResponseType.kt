@@ -6,5 +6,6 @@ enum class ResponseType {
     WARNING,
     EXIT,
     USER_INPUT,
-    BASIC
+    BASIC,
+    AUTHORIZATION
 }

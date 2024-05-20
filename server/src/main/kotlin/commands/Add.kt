@@ -4,9 +4,11 @@ package commands
 import commands.extra.Autogeneratable
 import data.Vehicle
 import exceptions.InvalidArgumentException
+import exceptions.users.UserNotAuthorizedException
 import model.User
 import model.response.Response
 import model.response.ResponseType
+import java.sql.SQLException
 import java.util.ResourceBundle
 
 class Add : Command(
@@ -20,7 +22,7 @@ class Add : Command(
      * @param argument  null for input from client app, --auto for calling built-in method
      * @return a Response object with a success message after adding an element or a Response object requesting an object
      */
-    override fun execute(argument: String?, user: User): Response {
+    override fun execute(argument: String?, user: User?): Response {
         val newElement = argument?.let {
             if (!checkFlag(it))
                 throw InvalidArgumentException(ResourceBundle.getBundle("message/error").getString("incorrect_flag"))
@@ -30,7 +32,17 @@ class Add : Command(
                 index = collectionManager.getSize()
             }
         }
-        dbManager.addVehicle(newElement, user)
+        try {
+            val vehicleId: Long =
+                dbManager.addVehicle(newElement, user ?: throw UserNotAuthorizedException()) //ошибку ловить прям тут?
+            newElement.id = vehicleId
+            logger.info("added element to database")
+        } catch (e: SQLException) {
+            logger.error("Error while adding element to database $e.message")
+            return Response("При добавлении элемента в базу данных произошла ошибка").apply {
+                responseType = ResponseType.ERROR
+            }
+        }
         collectionManager.add(newElement)
         logger.info("Element was added to collection")
         return Response("Элемент успешно добавлен").apply { responseType = ResponseType.SUCCESS }
@@ -42,9 +54,15 @@ class Add : Command(
      */
 
     override fun executeWithObject(vehicle: Vehicle, index: Int, user: User): Response {
-        dbManager.addVehicle(vehicle, user)
-
-        vehicle.id = index.toLong()
+        try {
+            val vehicleId: Long = dbManager.addVehicle(vehicle, user)
+            vehicle.id = vehicleId
+        } catch (e: SQLException) {
+            logger.error("Error while adding element to database $e.message")
+            return Response("При добавлении элемента в базу данных произошла ошибка").apply {
+                responseType = ResponseType.ERROR
+            }
+        }
         collectionManager.add(vehicle)
         logger.info("Element was added to collection")
         return Response("Элемент успешно добавлен").apply { responseType = ResponseType.SUCCESS }

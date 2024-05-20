@@ -1,5 +1,6 @@
 package commands
 
+import exceptions.users.UserNotAuthorizedException
 import model.User
 import model.response.Response
 import model.response.ResponseType
@@ -15,12 +16,12 @@ class RemoveFirst : Command(
      *  @param argument (should be null)
      *  @return a Response object with a success message or an error message based on the operation result
      */
-    override fun execute(argument: String?, user: User): Response {
+    override fun execute(argument: String?, user: User?): Response {
         return if (collectionManager.isEmpty()) {
             logger.warn("Trying to process command with an empty collection")
             Response("Коллекция пуста").apply { responseType = ResponseType.WARNING }
         } else {
-            if (!dbManager.checkCreator(1, user)) {
+            if (!dbManager.checkCreator(1, user ?: throw UserNotAuthorizedException())) {
                 Response("У вас нет прав для модификации данного объекта").apply {
                     responseType = ResponseType.ERROR
                 }

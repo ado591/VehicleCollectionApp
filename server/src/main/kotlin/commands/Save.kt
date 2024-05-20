@@ -24,7 +24,7 @@ class Save : Command(
      * @param argument a string argument representing the file path to save the collection
      * @return a Response object with a success message or an error message based on the operation result
      */
-    override fun execute(argument: String?, user: User): Response {
+    override fun execute(argument: String?, user: User?): Response {
         val filePath: String =
             argument ?: DEFAULT_SAVE_PATH
         try {

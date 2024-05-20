@@ -18,5 +18,5 @@ sealed class Command(private val name: String, private val description: String) 
     val logger: Logger = LogManager.getLogger("logger")
     fun name(): String = this.name
     fun description(): String = this.description
-    abstract fun execute(argument: String?, user: User): Response
+    abstract fun execute(argument: String?, user: User?): Response
 }

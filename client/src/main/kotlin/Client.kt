@@ -6,10 +6,7 @@ import model.response.ResponseType
 import network.UDPClient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import utils.ExecuteScript
-import utils.History
-import utils.ItemBuilder
-import utils.ObjectMapperWrapper
+import utils.*
 import java.io.IOException
 import java.util.Scanner
 import kotlin.system.exitProcess
@@ -22,31 +19,42 @@ class Client : KoinComponent {
     private var currentUser: User? = null
     fun interactiveMode(): Nothing {
         do {
-            run {
+            run outer@{
                 if (!serverResponseRequired) {
-                    val inputLine: String = scanner.nextLine() ?: return@run
-                    if (inputLine.split("\\s".toRegex())[0] == "execute_script") {
+                    val inputLine: String = scanner.nextLine() ?: return@outer
+                    val commandLine = inputLine.split("\\s".toRegex())[0]
+                    if (commandLine == "execute_script") {
                         val commandArguments = inputLine.split(" ", limit = 2)
                             .takeIf { it.size > 1 }
                             ?.drop(1)
                             ?.joinToString(" ").takeUnless { it.isNullOrBlank() }
                         ExecuteScript(this).execute(commandArguments)
-                        return@run
+                        return@outer
                     }
-                    if (inputLine.split("\\s".toRegex())[0] == "history") {
+                    if (commandLine == "history") {
                         val commandArguments = inputLine.split(" ", limit = 2)
                             .takeIf { it.size > 1 }
                             ?.drop(1)
                             ?.joinToString(" ").takeUnless { it.isNullOrBlank() }
                         println(History.execute(commandArguments))
-                        return@run
+                        return@outer
+                    }
+                    var clientRequest = Request(
+                        message = inputLine,
+                        user = currentUser
+                    )
+                    // если log_in, sign_up, то обновить currentUser
+                    if (commandLine == "log_in" || commandLine == "sign_up") {
+                        currentUser?.run {
+                            print("Вы уже вошли в систему. Выйти никак")
+                            return@outer
+                        }
+                        val userFromInput = UserBuilder.getUser()
+                        clientRequest.user = userFromInput
                     }
                     client.sendData(
                         ObjectMapperWrapper.clientMapper.writeValueAsBytes(
-                            Request(
-                                message = inputLine,
-                                user = currentUser
-                            )
+                            clientRequest
                         )
                     )
                     History.addToHistory(inputLine)
@@ -81,6 +89,11 @@ class Client : KoinComponent {
                 ResponseType.USER_INPUT -> {
                     userInputMode()
                     serverResponseRequired = true
+                }
+
+                ResponseType.AUTHORIZATION -> {
+                    println(serverResponse.message)
+                    currentUser = serverResponse.responseUser
                 }
 
                 else -> {

@@ -16,7 +16,7 @@ class Show : Command(
      * @param argument (should be null)
      * @return a Response object which contains a list of all elements in collection in string format
      */
-    override fun execute(argument: String?, user: User): Response {
+    override fun execute(argument: String?, user: User?): Response {
         if (collectionManager.isEmpty()) {
             logger.warn("Trying to process command ${name()} with an empty collection")
             return Response("Коллекция пуста").apply { responseType = ResponseType.WARNING }

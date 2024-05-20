@@ -22,7 +22,8 @@ import kotlin.system.exitProcess
 
 
 const val DEFAULT_SQL_PATH = "server/src/main/kotlin/database/schema.sql"
-const val pepper = "2Hq@*!8fdAQl" //todo: сменить
+const val pepper = "2Hq@*!8fdAQl"
+
 /**
  * Класс, выполняющий действия с базой данных
  */
@@ -85,7 +86,7 @@ class DatabaseManager : KoinComponent {
             val joinStatement = connection.prepareStatement(
                 ResourceBundle
                     .getBundle("queries")
-                    .getString("all_elements")
+                    .getString("get_vehicles")
             )
             val result = joinStatement.executeQuery()
             while (result.next()) {
@@ -133,15 +134,11 @@ class DatabaseManager : KoinComponent {
         val hashedPassword: String = PassHash.encryptString(user.password + pepper)
         val checkUserStatement: PreparedStatement = connection.prepareStatement(
             ResourceBundle
-                .getBundle("queries").getString("check_user")
+                .getBundle("queries").getString("user_exists")
         )
         checkUserStatement.setString(1, user.username)
-        checkUserStatement.setString(2, hashedPassword)
         val result: ResultSet = checkUserStatement.executeQuery()
-        result.next()
-        val count = result.getInt(1)
-        checkUserStatement.close()
-        return count == 1
+        return result.next()
     }
 
 
@@ -159,8 +156,12 @@ class DatabaseManager : KoinComponent {
                     .getBundle("queries")
                     .getString("add_user")
             )
+        val passHash = PassHash.encryptString(user.password ?: throw InvalidPasswordException())
+        val salt = PassHash.generateSalt()
+        val hashedPassword = pepper + passHash + salt
         addUserStatement.setString(1, user.username)
-        addUserStatement.setString(2, user.password)
+        addUserStatement.setString(2, hashedPassword)
+        addUserStatement.setString(3, salt)
         addUserStatement.executeUpdate()
         addUserStatement.close()
     }
@@ -177,10 +178,21 @@ class DatabaseManager : KoinComponent {
         }
         val getPasswordStatement: PreparedStatement =
             connection.prepareStatement(ResourceBundle.getBundle("queries").getString("get_pass"))
-        val result = getPasswordStatement.executeQuery().getString("password")
-        if (result != user.password) {
-            logger.error("Invalid password was given for user with username=${user.username}")
-            throw InvalidPasswordException()
+        getPasswordStatement.setString(1, user.username)
+        val resultSet = getPasswordStatement.executeQuery()
+        val requestPassword = user.password
+        if (resultSet.next()) {
+            val password = resultSet.getString("pass")
+            val salt = resultSet.getString("salt")
+            val hashedPassword =
+                pepper + PassHash.encryptString(requestPassword ?: throw InvalidPasswordException()) + salt
+            if (hashedPassword != password) {
+                logger.error("Invalid password was given for user with username=${user.username}. Expected $password, given $hashedPassword")
+                throw InvalidPasswordException()
+            }
+        } else {
+            logger.error("User with username=${user.username} not found")
+            throw UserNotFoundException()
         }
     }
 
@@ -235,21 +247,27 @@ class DatabaseManager : KoinComponent {
      * Добавляет объект типа Vehicle
      * @throws SQLException
      */
-    fun addVehicle(vehicle: Vehicle, user: User) {
-        try {
-            val preparedStatement: PreparedStatement =
-                connection.prepareStatement(ResourceBundle.getBundle("queries").getString("add_vehicle"))
-            preparedStatement.setString(1, vehicle.name)
-            preparedStatement.setInt(2, addCoordinates(vehicle.coordinates))
-            preparedStatement.setObject(3, vehicle.creationDate)
-            preparedStatement.setDouble(4, vehicle.enginePower)
-            preparedStatement.setInt(5, vehicle.fuelConsumption)
-            preparedStatement.setString(6, vehicle.type.name)
-            preparedStatement.setString(7, vehicle.fuelType.name)
-            preparedStatement.setInt(8, getUserIdByLogin(user))
-        } catch (e: SQLException) {
-            logger.error("Error while inserting vehicle to database")
-        }
+    fun addVehicle(vehicle: Vehicle, user: User): Long {
+        val preparedStatement: PreparedStatement =
+            connection.prepareStatement(ResourceBundle.getBundle("queries").getString("add_vehicle"))
+        preparedStatement.setString(1, vehicle.name)
+        preparedStatement.setInt(2, addCoordinates(vehicle.coordinates))
+
+        val timestamp = Timestamp.from(vehicle.creationDate.toInstant())
+        preparedStatement.setTimestamp(3, timestamp)
+
+        preparedStatement.setDouble(4, vehicle.enginePower)
+        preparedStatement.setInt(5, vehicle.fuelConsumption)
+        //preparedStatement.setObject(6, vehicle.type)
+        logger.info(vehicle.type.toString())
+        preparedStatement.setString(6, vehicle.type.toString())
+        preparedStatement.setString(7, vehicle.fuelType.toString())
+        preparedStatement.setInt(8, getUserIdByLogin(user))
+        preparedStatement.executeUpdate()
+        val result = preparedStatement.generatedKeys
+        result.next()
+
+        return result.getLong(1)
     }
 
     /**

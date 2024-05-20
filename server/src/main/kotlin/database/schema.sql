@@ -14,14 +14,15 @@ CREATE TABLE IF NOT EXISTS coordinates(
 CREATE TABLE IF NOT EXISTS users(
     id int NOT NULL PRIMARY KEY DEFAULT nextval('users_id_seq'),
     username VARCHAR(50) UNIQUE NOT NULL,
-    pass VARCHAR(20) NOT NULL
+    pass VARCHAR(255) NOT NULL,
+    salt VARCHAR(32) NOT NULL
 );
 
 
 CREATE TABLE IF NOT EXISTS vehicle(
     id bigint NOT NULL PRIMARY KEY DEFAULT nextval('vehicle_id_seq'),
     vehicle_name VARCHAR(255) NOT NULL,
-    coordinates_id INT REFERENCES coordinates(id),
+    coordinates_id INT REFERENCES coordinates(id) ON DELETE CASCADE,
     creation_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     engine_power DOUBLE PRECISION NOT NULL CHECK (engine_power > 0),
     fuel_consumption INT NOT NULL CHECK (fuel_consumption > 0),

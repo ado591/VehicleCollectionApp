@@ -16,7 +16,7 @@ class Exit : Command(
      * @param argument a string argument (should be null)
      * @return a Response object with a message indicating that the program has ended with exit code 0
      */
-    override fun execute(argument: String?, user: User): Response {
+    override fun execute(argument: String?, user: User?): Response {
         logger.info("Closing client app")
         return Response("Программа завершена с кодом 0").apply {
             responseType = ResponseType.EXIT
