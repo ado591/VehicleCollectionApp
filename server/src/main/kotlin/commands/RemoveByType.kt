@@ -6,6 +6,7 @@ import exceptions.users.UserNotAuthorizedException
 import model.User
 import model.response.Response
 import model.response.ResponseType
+import java.sql.SQLException
 import java.util.ResourceBundle
 import kotlin.IllegalArgumentException
 
@@ -36,12 +37,14 @@ class RemoveByType : Command(
                 }
             }
         }
-
-        dbManager.removeByType(removingType)
+        try {
+            dbManager.removeByType(removingType)
+        } catch (e: SQLException) {
+            return Response("Возникла ошибка при удалении элементов из бд. Чет с типами напутали T_T")
+        }
 
         val sizeBeforeExecute = collectionManager.getSize()
         collectionManager.getCollection().removeIf { it.type == removingType }
-        collectionManager.rearrange()
         return if (sizeBeforeExecute == collectionManager.getSize()) {
             logger.warn("No item with type $removingType was found in the collection")
             Response("Нет элементов, удовлетворяющих условиям поиска").apply { responseType = ResponseType.WARNING }

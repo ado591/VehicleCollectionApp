@@ -13,7 +13,7 @@ fun main() {
     startKoin {
         modules(serverModule)
     }
-    //todo: Class.forName("org.postgresql.Driver");
+    Class.forName("org.postgresql.Driver")
     val dbManager: DatabaseManager = object : KoinComponent {
         val manager: DatabaseManager by inject()
     }.manager

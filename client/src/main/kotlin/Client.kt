@@ -39,7 +39,7 @@ class Client : KoinComponent {
                         println(History.execute(commandArguments))
                         return@outer
                     }
-                    var clientRequest = Request(
+                    val clientRequest = Request(
                         message = inputLine,
                         user = currentUser
                     )
@@ -51,6 +51,7 @@ class Client : KoinComponent {
                         }
                         val userFromInput = UserBuilder.getUser()
                         clientRequest.user = userFromInput
+                        clientRequest.requestType = RequestType.AUTHORIZATION
                     }
                     client.sendData(
                         ObjectMapperWrapper.clientMapper.writeValueAsBytes(

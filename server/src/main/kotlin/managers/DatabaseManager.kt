@@ -43,7 +43,6 @@ class DatabaseManager : KoinComponent {
 
 
     private fun connectToDatabase(): Connection {
-        logger.info("$url, $username, $password")
         val res = DriverManager.getConnection(url, username, password)
         logger.info("Подключились")
         return res
@@ -131,7 +130,6 @@ class DatabaseManager : KoinComponent {
      * Проверяет существование пользователя с заданным логином
      */
     private fun userExists(user: User): Boolean {
-        val hashedPassword: String = PassHash.encryptString(user.password + pepper)
         val checkUserStatement: PreparedStatement = connection.prepareStatement(
             ResourceBundle
                 .getBundle("queries").getString("user_exists")
@@ -247,7 +245,7 @@ class DatabaseManager : KoinComponent {
      * Добавляет объект типа Vehicle
      * @throws SQLException
      */
-    fun addVehicle(vehicle: Vehicle, user: User): Long {
+    fun addVehicle(vehicle: Vehicle, user: User) {
         val preparedStatement: PreparedStatement =
             connection.prepareStatement(ResourceBundle.getBundle("queries").getString("add_vehicle"))
         preparedStatement.setString(1, vehicle.name)
@@ -259,15 +257,11 @@ class DatabaseManager : KoinComponent {
         preparedStatement.setDouble(4, vehicle.enginePower)
         preparedStatement.setInt(5, vehicle.fuelConsumption)
         //preparedStatement.setObject(6, vehicle.type)
-        logger.info(vehicle.type.toString())
+        //logger.info(vehicle.type.toString())
         preparedStatement.setString(6, vehicle.type.toString())
         preparedStatement.setString(7, vehicle.fuelType.toString())
         preparedStatement.setInt(8, getUserIdByLogin(user))
         preparedStatement.executeUpdate()
-        val result = preparedStatement.generatedKeys
-        result.next()
-
-        return result.getLong(1)
     }
 
     /**
@@ -317,7 +311,6 @@ class DatabaseManager : KoinComponent {
         preparedStatement.setInt(9, vehicle.coordinates.x)
         preparedStatement.setFloat(10, vehicle.coordinates.y)
         preparedStatement.executeUpdate()
-        connection.close()
     }
 
     /**
@@ -330,7 +323,6 @@ class DatabaseManager : KoinComponent {
         )
         preparedStatement.setLong(1, index)
         preparedStatement.executeUpdate()
-        connection.close()
     }
 
     /**
@@ -340,7 +332,6 @@ class DatabaseManager : KoinComponent {
         val preparedStatement: PreparedStatement =
             connection.prepareStatement(ResourceBundle.getBundle("queries").getString("clear_table"))
         preparedStatement.executeUpdate()
-        connection.close()
     }
 
     /**
@@ -352,6 +343,14 @@ class DatabaseManager : KoinComponent {
         )
         preparedStatement.setString(1, vehicleType.name)
         preparedStatement.executeUpdate()
-        connection.close()
+    }
+
+    fun getIndex(): Int {
+        val preparedStatement: PreparedStatement = connection.prepareStatement(
+            ResourceBundle.getBundle("queries").getString("get_vehicle_index")
+        )
+        val result: ResultSet = preparedStatement.executeQuery()
+        result.next()
+        return result.getInt(1)
     }
 }

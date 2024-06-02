@@ -39,7 +39,8 @@ class AddIfMin : Command(
         }
         return if (newElement < collectionManager.getMin()) {
             try {
-                val vehicleId: Long = dbManager.addVehicle(newElement, user ?: throw UserNotAuthorizedException())
+                dbManager.addVehicle(newElement, user ?: throw UserNotAuthorizedException())
+                val vehicleId: Long = dbManager.getIndex().toLong()
                 newElement.id = vehicleId
             } catch (e: SQLException) {
                 logger.error("Error while adding element to database $e.message")
@@ -68,7 +69,8 @@ class AddIfMin : Command(
         }
         return if (vehicle < collectionManager.getMin()) {
             try {
-                val vehicleId: Long = dbManager.addVehicle(vehicle, user)
+                dbManager.addVehicle(vehicle, user)
+                val vehicleId: Long = dbManager.getIndex().toLong()
                 vehicle.id = vehicleId
             } catch (e: SQLException) {
                 logger.error("Error while adding element to database $e.message")

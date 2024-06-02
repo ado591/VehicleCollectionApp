@@ -38,7 +38,6 @@ class RemoveById : Command(
             }
             logger.info("Element was successfully removed from database")
             collectionManager.removeById(id)
-            collectionManager.rearrange(id) //todo: проверить генерацию индексов
             logger.info("Element was removed from collection")
             Response("Элемент успешно удален").apply { responseType = ResponseType.SUCCESS }
         } else {

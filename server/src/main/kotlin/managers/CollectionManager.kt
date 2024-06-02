@@ -2,12 +2,12 @@ package managers
 
 import data.Vehicle
 import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.kotlin.logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.NoSuchElementException
 import kotlin.collections.ArrayDeque
 
 class CollectionManager(filepath: String) : KoinComponent {
@@ -16,14 +16,18 @@ class CollectionManager(filepath: String) : KoinComponent {
     private var collection = Collections.synchronizedList(loadedCollection)
     private val initTime: ZonedDateTime = ZonedDateTime.now()
     private val logger = LogManager.getLogger("logger")
+
     init {
         logger.info("Инициализирован менеджер коллекций")
     }
+
     /**
      * adds element to the collection
      */
     fun add(e: Vehicle) {
-        collection.add(e)
+        synchronized(this) {
+            collection.add(e)
+        }
     }
 
     /**
@@ -37,7 +41,9 @@ class CollectionManager(filepath: String) : KoinComponent {
      * clears current collection
      */
     fun clear() {
-        collection.clear()
+        synchronized(this) {
+            collection.clear()
+        }
     }
 
     fun isEmpty(): Boolean {
@@ -83,8 +89,10 @@ class CollectionManager(filepath: String) : KoinComponent {
      * removes element from the collection
      * @param id - id of the element to be removed
      */
-    fun removeById(id: Int) {
-        collection.removeAt(id)
+    fun removeById(index: Int) {
+        synchronized(this) {
+            collection.filter { it.id != index.toLong() }
+        }
     }
 
     /**
@@ -94,18 +102,22 @@ class CollectionManager(filepath: String) : KoinComponent {
      */
 
     fun update(id: Int, element: Vehicle) {
-        collection[id] = element
-        Vehicle.setCurrentId(collection.size.toLong())
+        synchronized(this) {
+            collection[id] = element
+            Vehicle.setCurrentId(collection.size.toLong())
+        }
     }
 
     /**
      * Generating new IDs of each vehicle
      */
     fun rearrange() {
-        var newId: Long = 1
-        collection
-            .forEach { it.id = newId++ }
-        Vehicle.setCurrentId(collection.size.toLong())
+        synchronized(this) {
+            var newId: Long = 1
+            collection
+                .forEach { it.id = newId++ }
+            Vehicle.setCurrentId(collection.size.toLong())
+        }
     }
 
     /**
@@ -114,10 +126,30 @@ class CollectionManager(filepath: String) : KoinComponent {
      */
 
     fun rearrange(start: Int) {
-        collection
-            .filter { vehicle -> vehicle.id > start }
-            .forEach { it.id -= 1 }
-        Vehicle.setCurrentId(collection.size.toLong())
+        synchronized(this) {
+            collection
+                .filter { vehicle -> vehicle.id > start }
+                .forEach { it.id -= 1 }
+            Vehicle.setCurrentId(collection.size.toLong())
+        }
+    }
+
+    fun getById(id: Int): Vehicle {
+        for (vehicle in collection) {
+            if (vehicle.id == id.toLong()) {
+                return vehicle
+            }
+        }
+        throw NoSuchElementException()
+    }
+
+    fun isExists(id: Int): Boolean {
+        return try {
+            getById(id)
+            true
+        } catch (e: NoSuchElementException) {
+            false
+        }
     }
 
 }

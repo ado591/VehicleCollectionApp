@@ -33,12 +33,13 @@ class Add : Command(
             }
         }
         try {
-            val vehicleId: Long =
-                dbManager.addVehicle(newElement, user ?: throw UserNotAuthorizedException()) //ошибку ловить прям тут?
+            dbManager.addVehicle(newElement, user ?: throw UserNotAuthorizedException())
+            val vehicleId = dbManager.getIndex().toLong()
             newElement.id = vehicleId
             logger.info("added element to database")
         } catch (e: SQLException) {
-            logger.error("Error while adding element to database $e.message")
+            logger.error("Error while adding element to database ${e.errorCode}")
+            logger.error(e.printStackTrace())
             return Response("При добавлении элемента в базу данных произошла ошибка").apply {
                 responseType = ResponseType.ERROR
             }
@@ -55,7 +56,8 @@ class Add : Command(
 
     override fun executeWithObject(vehicle: Vehicle, index: Int, user: User): Response {
         try {
-            val vehicleId: Long = dbManager.addVehicle(vehicle, user)
+            dbManager.addVehicle(vehicle, user)
+            val vehicleId: Long = dbManager.getIndex().toLong()
             vehicle.id = vehicleId
         } catch (e: SQLException) {
             logger.error("Error while adding element to database $e.message")

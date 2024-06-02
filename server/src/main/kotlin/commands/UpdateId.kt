@@ -7,6 +7,7 @@ import exceptions.users.UserNotAuthorizedException
 import model.User
 import model.response.Response
 import model.response.ResponseType
+import java.sql.SQLException
 import java.util.ResourceBundle
 
 class UpdateId : Command(
@@ -23,14 +24,14 @@ class UpdateId : Command(
             argument?.split(" ") ?: throw InvalidArgumentException("Не передан аргумент для команды ${name()}")
         val id: Int = (args[0].let {
             it.toIntOrNull() ?: throw InvalidArgumentException("Аргумент команды должен быть числом")
-        }) - 1
+        })
         val flag: String? = args.getOrNull(1)
         if (collectionManager.isEmpty()) {
             return Response("Коллекция пуста").apply { responseType = ResponseType.WARNING }
-        } else if (!(collectionManager.inBounds(id))) {
+        } else if (!(collectionManager.isExists(id))) {
             throw InvalidArgumentException("Указан некорректный индекс")
         }
-        if (!dbManager.checkCreator(id.toLong() + 1, user ?: throw UserNotAuthorizedException())) {
+        if (!dbManager.checkCreator(id.toLong(), user ?: throw UserNotAuthorizedException())) {
             return Response("У вас нет прав для модификации данного объекта").apply {
                 responseType = ResponseType.ERROR
             }
@@ -45,7 +46,7 @@ class UpdateId : Command(
                 index = id
             }
         }
-        newElement.id = id.toLong() + 1
+        newElement.id = id.toLong()
         collectionManager.update(id, newElement)
         return Response("Элемент успешно обновлен").apply { responseType = ResponseType.SUCCESS }
     }
@@ -56,8 +57,13 @@ class UpdateId : Command(
         } else if (!(collectionManager.inBounds(index))) {
             throw InvalidArgumentException("Указан некорректный индекс")
         }
-        dbManager.updateVehicle(vehicle, index.toLong() + 1, user)
-        vehicle.id = index.toLong() + 1
+        try {
+            logger.info("Updating in database with index $index")
+            dbManager.updateVehicle(vehicle, index.toLong(), user)
+        } catch (e: SQLException) {
+            return Response("произошла ошибка при обновлении элемента коллекции в базе данных")
+        }
+        vehicle.id = index.toLong()
         collectionManager.update(index, vehicle)
         return Response("Элемент успешно обновлен").apply { responseType = ResponseType.SUCCESS }
     }
