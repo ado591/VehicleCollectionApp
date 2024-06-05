@@ -3,8 +3,11 @@ package commands
 import commands.extra.Autogeneratable
 import data.Vehicle
 import exceptions.InvalidArgumentException
+import exceptions.users.UserNotAuthorizedException
+import model.User
 import model.response.Response
 import model.response.ResponseType
+import java.sql.SQLException
 import java.util.ResourceBundle
 
 class AddIfMin : Command(
@@ -18,7 +21,7 @@ class AddIfMin : Command(
      * @param argument  null for user input, --auto for calling built-in method
      * @return a Response object with result of execution
      */
-    override fun execute(argument: String?): Response {
+    override fun execute(argument: String?, user: User?): Response {
         val newElement = argument?.let {
             if (!checkFlag(it))
                 throw InvalidArgumentException("Передан неверный флаг")
@@ -35,6 +38,16 @@ class AddIfMin : Command(
             return Response("Коллекция пуста").apply { responseType = ResponseType.WARNING }
         }
         return if (newElement < collectionManager.getMin()) {
+            try {
+                dbManager.addVehicle(newElement, user ?: throw UserNotAuthorizedException())
+                val vehicleId: Long = dbManager.getIndex().toLong()
+                newElement.id = vehicleId
+            } catch (e: SQLException) {
+                logger.error("Error while adding element to database $e.message")
+                return Response("При добавлении элемента в базу данных произошла ошибка").apply {
+                    responseType = ResponseType.ERROR
+                }
+            }
             collectionManager.add(newElement)
             logger.info("Element was added to collection")
             customResponse.appendLine("Элемент успешно добавлен в коллекцию")
@@ -47,7 +60,7 @@ class AddIfMin : Command(
         }
     }
 
-    override fun executeWithObject(vehicle: Vehicle, index: Int): Response {
+    override fun executeWithObject(vehicle: Vehicle, index: Int, user: User): Response {
         vehicle.id = index.toLong()
         val customResponse: StringBuilder = StringBuilder().appendLine(vehicle.toString())
         if (collectionManager.isEmpty()) {
@@ -55,6 +68,16 @@ class AddIfMin : Command(
             return Response("Коллекция пуста").apply { responseType = ResponseType.WARNING }
         }
         return if (vehicle < collectionManager.getMin()) {
+            try {
+                dbManager.addVehicle(vehicle, user)
+                val vehicleId: Long = dbManager.getIndex().toLong()
+                vehicle.id = vehicleId
+            } catch (e: SQLException) {
+                logger.error("Error while adding element to database $e.message")
+                return Response("При добавлении элемента в базу данных произошла ошибка").apply {
+                    responseType = ResponseType.ERROR
+                }
+            }
             collectionManager.add(vehicle)
             logger.info("Element was added to collection")
             customResponse.appendLine("Элемент успешно добавлен в коллекцию")

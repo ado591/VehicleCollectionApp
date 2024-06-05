@@ -1,5 +1,6 @@
 package commands
 
+import model.User
 import model.response.Response
 import model.response.ResponseType
 import java.util.ResourceBundle
@@ -15,7 +16,7 @@ class PrintAsc : Command(
      * @param argument a string argument (should be null)
      * @return a Response object with a message containing string representations of the sorted elements of the collection
      */
-    override fun execute(argument: String?): Response {
+    override fun execute(argument: String?, user: User?): Response {
         if (collectionManager.isEmpty()) {
             logger.warn("Collection is empty")
             return Response("Коллекция пуста").apply { responseType = ResponseType.WARNING }

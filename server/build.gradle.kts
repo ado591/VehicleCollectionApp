@@ -31,6 +31,8 @@ dependencies {
     //log4j
     implementation("org.apache.logging.log4j:log4j-api-kotlin:1.4.0")
     implementation("org.apache.logging.log4j:log4j-core:2.23.1")
+    //database
+    implementation("org.postgresql:postgresql:42.5.4")
 }
 
 

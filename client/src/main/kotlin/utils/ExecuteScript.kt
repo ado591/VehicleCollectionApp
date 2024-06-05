@@ -53,9 +53,13 @@ class ExecuteScript(private val clientApp: Client) : KoinComponent {
                 val scriptName: String? = line.split(" ", limit = 2)
                     .takeIf { it.size > 1 }?.drop(1)?.joinToString(" ").takeUnless { it.isNullOrBlank() }
                 execute(scriptName)
+            } else if (line.split("\\s".toRegex())[0] == "sign_up" || line.split("\\s".toRegex())[0] == "log_in") {
+                println("Авторизация внутри скрипта недопустима")
             } else {
                 val clientRequest = Request(line).apply { requestType = RequestType.SCRIPT }
-                client.sendData(ObjectMapperWrapper.clientMapper.writeValueAsBytes(clientRequest))
+                client.sendData(ObjectMapperWrapper.clientMapper.writeValueAsBytes(clientRequest.apply {
+                    user = clientApp.getCurrentUser()
+                }))
                 clientApp.handleResponse()
             }
         }

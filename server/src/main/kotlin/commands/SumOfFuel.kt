@@ -1,5 +1,6 @@
 package commands
 
+import model.User
 import model.response.Response
 import model.response.ResponseType
 import java.util.ResourceBundle
@@ -14,7 +15,7 @@ class SumOfFuel : Command(
      * @param argument (should be null)
      * @return a Response object with a sum of fuel or an error message based on the operation result
      */
-    override fun execute(argument: String?): Response {
+    override fun execute(argument: String?, user: User?): Response {
         return if (collectionManager.isEmpty()) {
             logger.info("Trying to process command ${name()} with an empty collection")
             Response("Если у вас нет машины, то и топлива у нее нет").apply { responseType = ResponseType.WARNING }

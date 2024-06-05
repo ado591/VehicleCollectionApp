@@ -2,8 +2,11 @@ package commands
 
 import data.VehicleType
 import exceptions.InvalidArgumentException
+import exceptions.users.UserNotAuthorizedException
+import model.User
 import model.response.Response
 import model.response.ResponseType
+import java.sql.SQLException
 import java.util.ResourceBundle
 import kotlin.IllegalArgumentException
 
@@ -12,7 +15,12 @@ class RemoveByType : Command(
     ResourceBundle.getBundle("message/info").getString("removeByType_description")
 ) {
 
-    override fun execute(argument: String?): Response {
+    /**
+     * Удаляет все элементы коллекции, если их vehicle_type равен заданному
+     * Сначала проверяет в бд, что каждый элемент соответствующего типа создан пользователем
+     * Если нет, то не изменяет коллекцию. Если да, то сначала удаляет все записи в бд, а затем меняет коллекцию
+     */
+    override fun execute(argument: String?, user: User?): Response {
         val removingType: VehicleType = argument?.let {
             try {
                 VehicleType.valueOf(it.uppercase())
@@ -21,9 +29,22 @@ class RemoveByType : Command(
                 throw InvalidArgumentException("Такого типа не существует")
             }
         } ?: throw InvalidArgumentException("Не передан тип для удаления")
+
+        collectionManager.getCollection().filter { it.type == removingType }.forEach{
+            if (!dbManager.checkCreator(it.id, user ?: throw UserNotAuthorizedException())) {
+                return Response("У вас нет прав для модификации данного объекта").apply {
+                    responseType = ResponseType.ERROR
+                }
+            }
+        }
+        try {
+            dbManager.removeByType(removingType)
+        } catch (e: SQLException) {
+            return Response("Возникла ошибка при удалении элементов из бд. Чет с типами напутали T_T")
+        }
+
         val sizeBeforeExecute = collectionManager.getSize()
         collectionManager.getCollection().removeIf { it.type == removingType }
-        collectionManager.rearrange()
         return if (sizeBeforeExecute == collectionManager.getSize()) {
             logger.warn("No item with type $removingType was found in the collection")
             Response("Нет элементов, удовлетворяющих условиям поиска").apply { responseType = ResponseType.WARNING }

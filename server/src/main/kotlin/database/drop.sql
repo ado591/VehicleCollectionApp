@@ -1,0 +1,9 @@
+BEGIN;
+
+DROP TABLE IF EXISTS vehicle;
+DROP TYPE IF EXISTS fuel_type;
+DROP TYPE IF EXISTS vehicle_type;
+DROP TABLE IF EXISTS coordinates;
+DROP TABLE IF EXISTS users;
+
+END;

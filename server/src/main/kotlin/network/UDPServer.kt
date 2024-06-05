@@ -1,26 +1,22 @@
 package network
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import commands.Command
-import commands.extra.Autogeneratable
-import data.Vehicle
-import exceptions.InvalidArgumentException
-import exceptions.NoObjectPassedException
-import exceptions.UnknownCommandException
 import model.request.Request
 import model.response.Response
-import model.response.ResponseType
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.koin.core.component.KoinComponent
-import utils.RequestHandler
+import service.ReaderService
+import service.RequestService
+import service.SenderService
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.SocketAddress
 import java.nio.ByteBuffer
 import java.nio.channels.DatagramChannel
-import java.util.*
+import java.util.concurrent.*
+import java.util.concurrent.locks.*
+import java.util.function.*
+import java.util.function.Function
 
 
 const val DEFAULT_HOST = "localhost"
@@ -30,27 +26,34 @@ class UDPServer(host: String, port: Int) : KoinComponent {
     constructor() : this(DEFAULT_HOST, DEFAULT_SERVER_PORT)
 
     private val address: InetSocketAddress = InetSocketAddress(host, port)
-    private val server: DatagramChannel = DatagramChannel.open().bind(address)
+    private val channel: DatagramChannel = DatagramChannel.open().bind(address)
     private val logger: Logger = LogManager.getLogger("logger")
-    private val requestHandler = RequestHandler()
-    private val objectMapper =
-        ObjectMapper().registerModule(JavaTimeModule()).setTimeZone(TimeZone.getTimeZone("Europe/Moscow"))
+    private val lock = ReentrantLock()
 
     init {
-        server.configureBlocking(false)
+        channel.configureBlocking(false)
         logger.info("UDP server was created. Host name -- $host, port -- $port")
     }
 
-    private fun sendData(data: ByteArray, clientAddress: SocketAddress) {
-        logger.info("Sending data to $clientAddress")
-        server.send(ByteBuffer.wrap(data), clientAddress)
+    fun sendData(data: ByteArray, clientAddress: SocketAddress) {
+        /*synchronized(this) {
+            logger.info("Sending data to $clientAddress")
+            channel.send(ByteBuffer.wrap(data), clientAddress)
+        }*/
+        lock.lock()
+        try {
+            logger.info("Sending data to $clientAddress")
+            channel.send(ByteBuffer.wrap(data), clientAddress)
+        } finally {
+            lock.unlock()
+        }
     }
 
     private fun receiveData(): Pair<ByteArray, SocketAddress> {
         val buffer: ByteBuffer = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE)
         var remoteAddress: SocketAddress?
         do {
-            remoteAddress = server.receive(buffer)
+            remoteAddress = channel.receive(buffer)
         } while (remoteAddress == null)
         buffer.flip()
         val data = ByteArray(buffer.remaining())
@@ -59,27 +62,10 @@ class UDPServer(host: String, port: Int) : KoinComponent {
         return Pair(data, remoteAddress)
     }
 
-    private fun getObjectFromUser(address: SocketAddress, response: Response): Vehicle {
-        logger.info("Listening for client with address $address")
-        sendData(objectMapper.writeValueAsBytes(response), address)
-        val buf = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE)
-        do {
-            run {
-                buf.clear()
-                val senderAddress: SocketAddress = server.receive(buf) ?: return@run
-                if (senderAddress == address) {
-                    buf.flip()
-                    val receivedData = ByteArray(buf.remaining())
-                    buf.get(receivedData)
-                    val receivedResponse = objectMapper.readValue(receivedData, Request::class.java)
-                    return receivedResponse.vehicle ?: throw NoObjectPassedException()
-                }
-            }
-        } while (true)
-    }
-
 
     fun runServer(): Nothing {
+        logger.info("Starting server...")
+        val executor = Executors.newFixedThreadPool(10) // жалею свой ноут
         do {
             run {
                 val dataFromClient: Pair<ByteArray, SocketAddress>
@@ -89,46 +75,20 @@ class UDPServer(host: String, port: Int) : KoinComponent {
                     logger.error("Error while receiving data from client")
                     return@run
                 }
-                val clientData = dataFromClient.first
-                val clientAddress = dataFromClient.second
-                val clientRequest: Request
-                try {
-                    clientRequest = objectMapper.readValue(clientData, Request::class.java)
-                } catch (e: IOException) {
-                    val error =
-                        Response("Возникла ошибка при получении данных").apply { responseType = ResponseType.ERROR }
-                    logger.error("Error occurred while deserialization process")
-                    sendData(objectMapper.writeValueAsBytes(error), clientAddress)
-                    return@run
-                }
-                var serverResponse: Response
-                val commandToProcess: Command
-                try {
-                    val result = requestHandler.handle(clientRequest)
-                    commandToProcess = result.first
-                    serverResponse = result.second
-                    if (serverResponse.responseType == ResponseType.USER_INPUT && commandToProcess is Autogeneratable) {
-                        val element: Vehicle = getObjectFromUser(clientAddress, serverResponse)
-                        serverResponse =
-                            requestHandler.handleWithObject(element, commandToProcess, serverResponse.index)
-                    }
-                } catch (e: UnknownCommandException) {
-                    logger.error("Could not find command")
-                    serverResponse = Response("Неизвестная команда").apply {
-                        responseType = ResponseType.ERROR
-                    }
-                } catch (e: InvalidArgumentException) {
-                    logger.error("Invalid arguments for command")
-                    serverResponse = Response(e.message ?: "Переданы неверные аргументы").apply {
-                        responseType = ResponseType.ERROR
-                    }
-                } catch (e: NoObjectPassedException) {
-                    logger.error("No valid object for command")
-                    serverResponse = Response("Для выполнения команды требуется передать объект").apply {
-                        responseType = ResponseType.ERROR
-                    }
-                }
-                sendData(objectMapper.writeValueAsBytes(serverResponse), clientAddress)
+                val requestReader: Function<Pair<ByteArray, SocketAddress>, Pair<Request, SocketAddress>> =
+                    ReaderService()
+                val requestExecutor: Function<Pair<Request, SocketAddress>, Pair<Response, SocketAddress>> =
+                    RequestService(channel, this)
+                val responseSender: Consumer<Pair<Response, SocketAddress>> = SenderService(this)
+                CompletableFuture
+                    .supplyAsync { dataFromClient }
+                    .thenApplyAsync(requestReader)
+                    .thenApplyAsync(requestExecutor)
+                    .thenAcceptAsync({ p: Pair<Response, SocketAddress> ->
+                        executor.execute {
+                            responseSender.accept(p)
+                        }
+                    }, Executors.newSingleThreadExecutor())
             }
         } while (true)
     }
